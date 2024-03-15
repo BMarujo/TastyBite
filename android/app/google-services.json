@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "11961631583",
+    "project_id": "tastybite-1bd69",
+    "storage_bucket": "tastybite-1bd69.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11961631583:android:281e609b4693631aa2acea",
+        "android_client_info": {
+          "package_name": "com.example.tastybite"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_i1P30OsFc-LUN6i_k5Ma6QF2vD9waQg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
