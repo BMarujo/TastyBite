@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'wallet.dart';
+import 'package:tastybite/myuser.dart';
+import 'package:tastybite/history.dart';
+import 'package:tastybite/wallet.dart';
 import 'package:provider/provider.dart';
-import 'user.dart';
-import 'history.dart';
 
 class HomeScreen extends StatelessWidget {
-  final User user;
+  final MyUser user;
 
   const HomeScreen({super.key, required this.user});
 

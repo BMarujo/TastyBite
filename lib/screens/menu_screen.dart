@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'wallet.dart';
+import 'package:tastybite/myuser.dart';
+import 'package:tastybite/wallet.dart';
 import 'package:provider/provider.dart';
-import 'user.dart';
 import 'package:intl/intl.dart';
 
 class MenuItem {
@@ -19,7 +19,7 @@ class MenuItem {
 }
 
 class MenuScreen extends StatelessWidget {
-  final User user;
+  final MyUser user;
 
   MenuScreen({super.key, required this.user});
 

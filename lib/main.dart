@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:tastybite/firebase_options.dart';
-import 'splash.dart';
-import 'user.dart';
-import 'screens_builder.dart';
-import 'login.dart';
+import 'package:tastybite/splash.dart';
+import 'package:tastybite/myuser.dart';
+import 'package:tastybite/screens_builder.dart';
+import 'package:tastybite/login.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async {
@@ -17,7 +17,7 @@ Future<void> main() async {
         onGenerateRoute: (RouteSettings settings) {
           switch (settings.name) {
             case '/home':
-              User user = settings.arguments as User;
+              MyUser user = settings.arguments as MyUser;
               return MaterialPageRoute(
                   builder: (context) => ScreenBuilder(user: user));
             case '/login':

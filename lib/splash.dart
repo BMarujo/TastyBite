@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'login.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -42,8 +41,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void changePage() {
-    Navigator.of(context)
-        .pushReplacement(MaterialPageRoute(builder: (_) => const LoginPage()));
+    Navigator.pushNamed(context, '/login');
   }
 
   @override

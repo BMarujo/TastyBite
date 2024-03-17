@@ -1,11 +1,11 @@
-class User {
+class MyUser {
   final String? name;
 
   List<String> history = [];
 
   List<String> date = [];
 
-  User({this.name});
+  MyUser({this.name});
 
   String? get getname => name;
 

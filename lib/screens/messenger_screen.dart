@@ -1,37 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:tastybite/myuser.dart';
 
-class HistoryPage extends StatelessWidget {
+class MessengerScreen extends StatelessWidget {
   final MyUser user;
-  const HistoryPage({super.key, required this.user});
+  const MessengerScreen({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Histórico de Compras',
+          'Mensagens',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor:
             Colors.blue, // Set the app bar background color to blue
       ),
       body: ListView.builder(
-        itemCount: user.getHistory.length,
+        itemCount: 10,
         itemBuilder: (context, index) {
-          String historyItem = user.getHistory[index];
-          String dateItem = user.getDate[index];
-          Key itemkey = Key(historyItem);
           return Card(
             color: Colors.blue.shade200,
             margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: Dismissible(
-              key: itemkey,
+              key: UniqueKey(),
               direction: DismissDirection.startToEnd,
-              onDismissed: (direction) {
-                user.removeHistory(historyItem);
-                user.removeDate(dateItem);
-              },
+              onDismissed: (direction) {},
               background: Container(
                 color: Colors.red,
                 alignment: Alignment.centerLeft,
@@ -49,16 +43,16 @@ class HistoryPage extends StatelessWidget {
                   ],
                 ),
               ),
-              child: ListTile(
+              child: const ListTile(
                 subtitle: Text(
-                  'Data da Compra: $dateItem',
-                  style: const TextStyle(
+                  'Data da Mensagem: ',
+                  style: TextStyle(
                       color: Color.fromARGB(255, 0, 0, 0), fontSize: 17),
                 ),
                 title: Text(
-                  historyItem,
-                  style: const TextStyle(
-                      color: Color.fromARGB(255, 0, 0, 0), fontSize: 25),
+                  "essageItem",
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 0), fontSize: 20),
                 ),
               ),
             ),

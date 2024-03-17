@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'wallet.dart';
+import 'package:tastybite/screens/messenger_screen.dart';
+import 'package:tastybite/myuser.dart';
+import 'package:tastybite/wallet.dart';
 import 'package:provider/provider.dart';
-import 'menu_screen.dart';
-import 'home_screen.dart';
-import 'wallet_screen.dart';
-import 'user.dart';
+import 'package:tastybite/screens/home_screen.dart';
+import 'package:tastybite/screens/menu_screen.dart';
+import 'package:tastybite/screens/wallet_screen.dart';
 
 class ScreenBuilder extends StatelessWidget {
-  final User user;
+  final MyUser user;
 
   ScreenBuilder({super.key, required this.user});
 
@@ -16,7 +17,12 @@ class ScreenBuilder extends StatelessWidget {
       PersistentTabController(initialIndex: 1);
 
   List<Widget> _buildScreens() {
-    return [MenuScreen(user: user), HomeScreen(user: user), WalletScreen()];
+    return [
+      MenuScreen(user: user),
+      HomeScreen(user: user),
+      const WalletScreen(),
+      MessengerScreen(user: user)
+    ];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -44,6 +50,14 @@ class ScreenBuilder extends StatelessWidget {
           weight: 20,
         ),
         title: ("Carteira"),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(
+          Icons.message,
+          size: 35,
+          weight: 20,
+        ),
+        title: ("Mensagens"),
       ),
     ];
   }

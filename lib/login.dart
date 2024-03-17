@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'user.dart';
+import 'package:tastybite/myuser.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -77,7 +77,7 @@ class LoginPage extends StatelessWidget {
                     ),
                   );
                 } else {
-                  User user = User(name: name.text);
+                  MyUser user = MyUser(name: name.text);
                   Navigator.pushNamed(context, '/home', arguments: user);
                 }
               },
