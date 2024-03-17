@@ -1,17 +1,34 @@
 import 'package:flutter/material.dart';
 import 'wallet.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class WalletScreen extends StatelessWidget {
-  const WalletScreen({super.key});
+  WalletScreen({super.key});
+
+  final DatabaseReference ref = FirebaseDatabase.instance.ref("users/123");
+
+  Future<String> dbtest() async {
+    final snapshot = await ref.child('money').get();
+    return snapshot.value.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
     TextEditingController money = TextEditingController();
     Wallet wallet = Provider.of<Wallet>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('A Minha Carteira'),
+        title: FutureBuilder(
+          future: dbtest(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Text('Carregando...');
+            }
+            return Text('Saldo: ${snapshot.data}');
+          },
+        ),
         backgroundColor:
             Colors.blue, // Set the app bar background color to blue
       ),
@@ -104,12 +121,18 @@ class WalletScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 70),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 try {
                   wallet.deposit(
                       money.text.isEmpty ? 0 : double.parse(money.text));
+
+                  await ref.set({
+                    "name": "John",
+                    "age": 18,
+                    "address": {"line1": "100 Mountain View"},
+                    "money": wallet.balance
+                  });
                 } catch (e) {
                   print(e);
                 }
@@ -128,6 +151,8 @@ class WalletScreen extends StatelessWidget {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             ),
             const SizedBox(height: 60),
+            const SizedBox(height: 75),
+            const SizedBox(height: 140),
           ],
         ),
       ),
