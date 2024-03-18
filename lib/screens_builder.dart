@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'package:tastybite/home_screens/messenger_screen.dart';
+import 'package:tastybite/home_screens/messenger_screen/messenger_screen.dart';
 import 'package:tastybite/util/myuser.dart';
 import 'package:tastybite/util/wallet.dart';
 import 'package:provider/provider.dart';
-import 'package:tastybite/home_screens/home_screen.dart';
+import 'package:tastybite/home_screens/home_screen/home_screen.dart';
 import 'package:tastybite/home_screens/menu_screen.dart';
 import 'package:tastybite/home_screens/wallet_screen.dart';
 
@@ -21,7 +21,7 @@ class ScreenBuilder extends StatelessWidget {
       MenuScreen(user: user),
       HomeScreen(user: user),
       const WalletScreen(),
-      MessengerScreen(user: user)
+      const MessengerScreen()
     ];
   }
 

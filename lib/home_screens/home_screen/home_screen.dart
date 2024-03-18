@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tastybite/util/myuser.dart';
-import 'package:tastybite/history.dart';
+import 'package:tastybite/home_screens/home_screen/history.dart';
 import 'package:tastybite/util/wallet.dart';
 import 'package:provider/provider.dart';
 
