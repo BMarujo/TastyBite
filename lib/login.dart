@@ -122,21 +122,6 @@ class LoginPage extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 100),
-              child: Text.rich(
-                textAlign: TextAlign.left,
-                TextSpan(
-                  text: 'Olá, como se chama?',
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 255, 255, 255),
-                    fontSize: 50,
-                    fontWeight: FontWeight.w500,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ),
-            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
               child: TextFormField(
