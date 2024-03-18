@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tastybite/message_model/message.dart';
+import 'package:tastybite/util/message_model/message.dart';
 
 class ChatService {
   final FirebaseFirestore database;
