@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tastybite/myuser.dart';
+import 'package:tastybite/util/myuser.dart';
 
 class MessengerScreen extends StatelessWidget {
   final MyUser user;

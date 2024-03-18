@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tastybite/myuser.dart';
+import 'package:tastybite/util/myuser.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});

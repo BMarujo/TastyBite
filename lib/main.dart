@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:tastybite/firebase_options.dart';
 import 'package:tastybite/splash.dart';
-import 'package:tastybite/myuser.dart';
+import 'package:tastybite/util/myuser.dart';
 import 'package:tastybite/screens_builder.dart';
 import 'package:tastybite/login.dart';
 import 'package:intl/date_symbol_data_local.dart';

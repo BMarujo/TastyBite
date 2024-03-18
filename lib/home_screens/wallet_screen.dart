@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tastybite/wallet.dart';
+import 'package:tastybite/util/wallet.dart';
 import 'package:provider/provider.dart';
 
 class WalletScreen extends StatelessWidget {
