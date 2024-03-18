@@ -6,10 +6,12 @@ import 'package:tastybite/util/myuser.dart';
 import 'package:tastybite/screens_builder.dart';
 import 'package:tastybite/login.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:tastybite/locator/service_locator.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await initSerivceLocator();
   initializeDateFormatting('pt_PT', null).then((_) {
     runApp(
       MaterialApp(
@@ -22,7 +24,7 @@ Future<void> main() async {
                   builder: (context) => ScreenBuilder(user: user));
             case '/login':
               return MaterialPageRoute(
-                builder: (context) => const LoginPage(),
+                builder: (context) => LoginPage(),
               );
           }
           return null;
