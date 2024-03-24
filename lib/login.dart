@@ -3,6 +3,8 @@ import 'package:tastybite/util/myuser.dart';
 import 'package:tastybite/locator/service_locator.dart';
 import 'package:tastybite/auth_service/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tastybite/register_screen.dart';
+import 'package:tastybite/screens_builder.dart';
 
 class MyButton extends StatelessWidget {
   const MyButton({super.key, required this.text, required this.onTap});
@@ -97,8 +99,9 @@ class LoginPage extends StatelessWidget {
             );
           });
       await authUser.signIn(email, password);
-
-      Navigator.pushNamed(context, '/home', arguments: user2);
+      Route route =
+          MaterialPageRoute(builder: (context) => ScreenBuilder(user: user2));
+      Navigator.pushReplacement(context, route);
     } on Exception catch (ex) {
       showDialog(
         context: context,
@@ -173,7 +176,9 @@ class LoginPage extends StatelessWidget {
                   );
                 } else {
                   MyUser user2 = MyUser(name: name.text);
-                  Navigator.pushNamed(context, '/home', arguments: user2);
+                  Route route = MaterialPageRoute(
+                      builder: (context) => ScreenBuilder(user: user2));
+                  Navigator.pushReplacement(context, route);
                 }
               },
               child: const Text(
@@ -236,7 +241,9 @@ class LoginPage extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/register');
+                    Route route = MaterialPageRoute(
+                        builder: (context) => RegisterScreen());
+                    Navigator.pushReplacement(context, route);
                   },
                   child: Text(
                     "Register now",

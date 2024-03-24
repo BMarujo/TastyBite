@@ -43,7 +43,7 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ListTile(
-              title: const Text("L O G O U T"),
+              title: const Text("Fechar Aplicação"),
               leading: Icon(
                 Icons.logout,
                 color: Theme.of(context).colorScheme.primary,

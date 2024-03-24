@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:tastybite/login.dart';
+import 'package:flutter/services.dart';
 
 class AuthServices {
   final FirebaseAuth user;
@@ -36,8 +35,7 @@ class AuthServices {
 
   Future<void> signOut(context) async {
     await user.signOut();
-    Route route = MaterialPageRoute(builder: (context) => LoginPage());
-    Navigator.pushReplacement(context, route);
+    SystemNavigator.pop();
   }
 
   Future<UserCredential> signUp(String email, password) async {
