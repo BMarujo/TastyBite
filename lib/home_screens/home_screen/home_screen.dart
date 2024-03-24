@@ -3,6 +3,8 @@ import 'package:tastybite/util/myuser.dart';
 import 'package:tastybite/home_screens/home_screen/history.dart';
 import 'package:tastybite/util/wallet.dart';
 import 'package:provider/provider.dart';
+import 'package:tastybite/locator/service_locator.dart';
+import 'package:tastybite/auth_service/auth_service.dart';
 
 class HomeScreen extends StatelessWidget {
   final MyUser user;
@@ -40,6 +42,18 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            ListTile(
+              title: const Text("L O G O U T"),
+              leading: Icon(
+                Icons.logout,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              onTap: () async {
+                await AuthServices(locator.get(), locator.get())
+                    .signOut(context);
+              },
+            ),
+            const SizedBox(height: 50),
             Image.asset('assets/qrcode.png', width: 200, height: 200),
             const SizedBox(height: 75),
             const Row(

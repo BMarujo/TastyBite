@@ -7,6 +7,7 @@ import 'package:tastybite/screens_builder.dart';
 import 'package:tastybite/login.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:tastybite/locator/service_locator.dart';
+import 'package:tastybite/register_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +26,10 @@ Future<void> main() async {
             case '/login':
               return MaterialPageRoute(
                 builder: (context) => LoginPage(),
+              );
+            case '/register':
+              return MaterialPageRoute(
+                builder: (context) => RegisterScreen(),
               );
           }
           return null;
