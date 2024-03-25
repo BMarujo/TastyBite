@@ -71,8 +71,8 @@ class MyTextField extends StatelessWidget {
           filled: true,
           fillColor: Theme.of(context).colorScheme.secondary,
           hintText: hint,
-          hintStyle: TextStyle(
-            color: Theme.of(context).colorScheme.primary,
+          hintStyle: const TextStyle(
+            color: Colors.white70,
           ),
         ),
       ),
@@ -121,7 +121,7 @@ class LoginPage extends StatelessWidget {
     var passwordController = TextEditingController();
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 73, 110, 211),
+      backgroundColor: const Color.fromARGB(255, 126, 178, 255),
       body: Center(
         child: Column(
           children: [
