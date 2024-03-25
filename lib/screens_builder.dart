@@ -10,6 +10,7 @@ import 'package:tastybite/home_screens/menu_screen.dart';
 import 'package:tastybite/home_screens/wallet_screen.dart';
 import 'package:tastybite/locator/service_locator.dart';
 import 'package:tastybite/auth_service/auth_service.dart';
+import 'package:tastybite/home_screens/map_screen.dart';
 
 final AuthServices _authServices = locator.get();
 
@@ -19,14 +20,15 @@ class ScreenBuilder extends StatelessWidget {
   ScreenBuilder({super.key, required this.user});
 
   final PersistentTabController _controller =
-      PersistentTabController(initialIndex: 1);
+      PersistentTabController(initialIndex: 2);
 
   List<Widget> _buildScreens() {
     return [
       MenuScreen(user: user),
+      const OrderLocationScreen(),
       HomeScreen(user: user),
       const WalletScreen(),
-      const MessengerScreen()
+      const MessengerScreen(),
     ];
   }
 
@@ -39,6 +41,14 @@ class ScreenBuilder extends StatelessWidget {
           weight: 20,
         ),
         title: ("Menu"),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(
+          Icons.map,
+          size: 35,
+          weight: 20,
+        ),
+        title: ("Mapa"),
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(
