@@ -5,11 +5,10 @@ import 'package:tastybite/util/myuser.dart';
 import 'package:tastybite/login.dart';
 import 'package:tastybite/screens_builder.dart';
 
-enum AccountType { Client, DeliveryGuy }
+enum AccountType { client, deliveryguy }
 
 class MyButton extends StatelessWidget {
-  const MyButton({Key? key, required this.text, required this.onTap})
-      : super(key: key);
+  const MyButton({super.key, required this.text, required this.onTap});
 
   final String text;
   final void Function()? onTap;
@@ -43,12 +42,12 @@ class MyButton extends StatelessWidget {
 
 class MyTextField extends StatelessWidget {
   const MyTextField({
-    Key? key,
+    super.key,
     required this.hint,
     required this.obsecure,
     required this.controller,
     this.focusNode,
-  }) : super(key: key);
+  });
 
   final String hint;
   final bool obsecure;
@@ -88,7 +87,7 @@ class MyTextField extends StatelessWidget {
 }
 
 class RegisterScreen extends StatefulWidget {
-  RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
@@ -101,7 +100,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedAccountType = AccountType.Client; // Default value
+    _selectedAccountType = AccountType.client; // Default value
   }
 
   Future<void> signUp(String email, String password, String passwordConfirm,
@@ -230,12 +229,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     });
                   },
                   items: <AccountType>[
-                    AccountType.Client,
-                    AccountType.DeliveryGuy,
+                    AccountType.client,
+                    AccountType.deliveryguy,
                   ].map<DropdownMenuItem<AccountType>>((AccountType value) {
                     return DropdownMenuItem<AccountType>(
                       value: value,
-                      child: Text(value == AccountType.Client
+                      child: Text(value == AccountType.client
                           ? 'Client'
                           : 'Delivery Guy'),
                     );

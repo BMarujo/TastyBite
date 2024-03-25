@@ -83,7 +83,7 @@ class MyTextField extends StatelessWidget {
 }
 
 class LoginPage extends StatelessWidget {
-  LoginPage({Key? key});
+  LoginPage({super.key});
 
   final FirebaseAuth _auth = locator.get();
   final FirebaseFirestore _firestore = locator.get();
@@ -195,7 +195,7 @@ class LoginPage extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     Route route = MaterialPageRoute(
-                        builder: (context) => RegisterScreen());
+                        builder: (context) => const RegisterScreen());
                     Navigator.pushReplacement(context, route);
                   },
                   child: Text(
