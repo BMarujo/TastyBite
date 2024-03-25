@@ -5,10 +5,15 @@ import 'package:tastybite/util/myuser.dart';
 import 'package:tastybite/login.dart';
 import 'package:tastybite/screens_builder.dart';
 
+enum AccountType { Client, DeliveryGuy }
+
 class MyButton extends StatelessWidget {
-  const MyButton({super.key, required this.text, required this.onTap});
+  const MyButton({Key? key, required this.text, required this.onTap})
+      : super(key: key);
+
   final String text;
   final void Function()? onTap;
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -37,12 +42,14 @@ class MyButton extends StatelessWidget {
 }
 
 class MyTextField extends StatelessWidget {
-  const MyTextField(
-      {super.key,
-      required this.hint,
-      required this.obsecure,
-      required this.controller,
-      this.focusNode});
+  const MyTextField({
+    Key? key,
+    required this.hint,
+    required this.obsecure,
+    required this.controller,
+    this.focusNode,
+  }) : super(key: key);
+
   final String hint;
   final bool obsecure;
   final TextEditingController controller;
@@ -80,9 +87,23 @@ class MyTextField extends StatelessWidget {
   }
 }
 
-class RegisterScreen extends StatelessWidget {
-  RegisterScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  RegisterScreen({Key? key}) : super(key: key);
+
+  @override
+  _RegisterScreenState createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   final user = AuthServices(locator.get(), locator.get());
+  late AccountType _selectedAccountType;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedAccountType = AccountType.Client; // Default value
+  }
+
   Future<void> signUp(String email, String password, String passwordConfirm,
       String name, context) async {
     MyUser user2 = MyUser(name: name);
@@ -101,6 +122,7 @@ class RegisterScreen extends StatelessWidget {
             MaterialPageRoute(builder: (context) => ScreenBuilder(user: user2));
         Navigator.pushReplacement(context, route);
       } on Exception catch (ex) {
+        Navigator.pop(context);
         showDialog(
           context: context,
           builder: (context) {
@@ -115,7 +137,7 @@ class RegisterScreen extends StatelessWidget {
         context: context,
         builder: (context) {
           return const AlertDialog(
-            content: Text("Passwords dont' match"),
+            content: Text("Passwords don't match"),
           );
         },
       );
@@ -143,7 +165,7 @@ class RegisterScreen extends StatelessWidget {
                 height: 40,
               ),
               Text(
-                "Lest's create an account for you",
+                "Let's create an account for you",
                 style: TextStyle(
                   fontSize: 16,
                   color: Theme.of(context).colorScheme.primary,
@@ -172,6 +194,43 @@ class RegisterScreen extends StatelessWidget {
                 hint: "Confirm Password",
                 obsecure: true,
                 controller: pwConfirmController,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: DropdownButtonFormField<AccountType>(
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10.0,
+                        horizontal: 25.0), // Adjust padding as needed
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Color.fromARGB(
+                            255, 0, 0, 0), // Change the color to black
+                      ),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  value: _selectedAccountType,
+                  onChanged: (AccountType? newValue) {
+                    setState(() {
+                      _selectedAccountType = newValue!;
+                    });
+                  },
+                  items: <AccountType>[
+                    AccountType.Client,
+                    AccountType.DeliveryGuy,
+                  ].map<DropdownMenuItem<AccountType>>((AccountType value) {
+                    return DropdownMenuItem<AccountType>(
+                      value: value,
+                      child: Text(value == AccountType.Client
+                          ? 'Client'
+                          : 'Delivery Guy'),
+                    );
+                  }).toList(),
+                ),
               ),
               const SizedBox(
                 height: 25,

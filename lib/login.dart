@@ -104,6 +104,7 @@ class LoginPage extends StatelessWidget {
           MaterialPageRoute(builder: (context) => ScreenBuilder(user: user2));
       Navigator.pushReplacement(context, route);
     } on Exception catch (ex) {
+      Navigator.pop(context);
       showDialog(
         context: context,
         builder: (context) {
