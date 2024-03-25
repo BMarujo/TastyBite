@@ -64,8 +64,8 @@ class MyTextField extends StatelessWidget {
           filled: true,
           fillColor: Theme.of(context).colorScheme.secondary,
           hintText: hint,
-          hintStyle: TextStyle(
-            color: Theme.of(context).colorScheme.primary,
+          hintStyle: const TextStyle(
+            color: Colors.white70,
           ),
         ),
       ),
@@ -89,7 +89,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final controller = TextEditingController();
   FocusNode myFocusNode = FocusNode();
-  final ScrollController scrollController = ScrollController();
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -137,54 +137,62 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.receiverEmail),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.grey,
-        elevation: 0,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: MessageList(
-              receiverID: widget.receiverId,
-              controller: scrollController,
+    if (authService.getCurrentuser() == null) {
+      scrollController = ScrollController();
+
+      return ListView(
+        controller: scrollController,
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.receiverEmail),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.grey,
+          elevation: 0,
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: MessageList(
+                receiverID: widget.receiverId,
+                controller: scrollController,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 30.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: MyTextField(
-                    hint: "Type a message....",
-                    obsecure: false,
-                    controller: controller,
-                    focusNode: myFocusNode,
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(right: 20.0),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.green,
-                  ),
-                  child: IconButton(
-                    onPressed: sendMessage,
-                    icon: const Icon(
-                      Icons.arrow_upward,
-                      color: Colors.white,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: MyTextField(
+                      hint: "Type a message....",
+                      obsecure: false,
+                      controller: controller,
+                      focusNode: myFocusNode,
                     ),
                   ),
-                ),
-              ],
+                  Container(
+                    margin: const EdgeInsets.only(right: 20.0),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.green,
+                    ),
+                    child: IconButton(
+                      onPressed: sendMessage,
+                      icon: const Icon(
+                        Icons.arrow_upward,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
   }
 }
 
@@ -209,7 +217,8 @@ class MessageList extends StatelessWidget {
             ),
           );
         }
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            !snapshot.hasData) {
           return Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
