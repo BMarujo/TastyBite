@@ -17,17 +17,6 @@ class AuthServices {
     try {
       final UserCredential userCredential = await user
           .signInWithEmailAndPassword(email: email, password: password);
-      _database
-          .collection("Users")
-          .doc(
-            userCredential.user!.uid,
-          )
-          .set(
-        {
-          "uid": userCredential.user!.uid,
-          "email": email,
-        },
-      );
       return userCredential;
     } on FirebaseAuthException catch (ex) {
       throw Exception(ex.message);
@@ -40,7 +29,7 @@ class AuthServices {
         context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
 
-  Future<UserCredential> signUp(String email, password) async {
+  Future<UserCredential> signUp(String email, password, nickname) async {
     try {
       final UserCredential userCredential = await user
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -53,6 +42,7 @@ class AuthServices {
         {
           "uid": userCredential.user!.uid,
           "email": email,
+          "name": nickname,
         },
       );
 

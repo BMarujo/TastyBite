@@ -5,6 +5,7 @@ import 'package:tastybite/auth_service/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tastybite/register_screen.dart';
 import 'package:tastybite/screens_builder.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyButton extends StatelessWidget {
   const MyButton({super.key, required this.text, required this.onTap});
@@ -82,14 +83,13 @@ class MyTextField extends StatelessWidget {
 }
 
 class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
-  final FirebaseAuth user = locator.get();
+  LoginPage({Key? key});
 
-  Future<void> signIn(
-      String email, String password, String name, context) async {
-    final authUser = AuthServices(locator.get(), locator.get());
+  final FirebaseAuth _auth = locator.get();
+  final FirebaseFirestore _firestore = locator.get();
 
-    MyUser user2 = MyUser(name: name);
+  Future<void> signIn(String email, String password, context) async {
+    final authUser = AuthServices(_firestore, _auth);
 
     try {
       showDialog(
@@ -99,7 +99,19 @@ class LoginPage extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           });
+
+      // Sign in the user
       await authUser.signIn(email, password);
+
+      // Retrieve user's nickname from Firestore
+      final userUid = _auth.currentUser!.uid;
+      final userData = await _firestore.collection("Users").doc(userUid).get();
+      final nickname = userData["name"];
+
+      // Create MyUser instance with retrieved nickname
+      MyUser user2 = MyUser(name: nickname);
+
+      // Navigate to the next screen
       Route route =
           MaterialPageRoute(builder: (context) => ScreenBuilder(user: user2));
       Navigator.pushReplacement(context, route);
@@ -118,7 +130,6 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController name = TextEditingController();
     var emailController = TextEditingController();
     var passwordController = TextEditingController();
 
@@ -127,67 +138,7 @@ class LoginPage extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
-              child: TextFormField(
-                controller: name,
-                strutStyle: const StrutStyle(
-                  fontSize: 20,
-                  height: 2,
-                ),
-                style: const TextStyle(
-                  color: Color.fromARGB(255, 255, 255, 255),
-                  fontSize: 20,
-                ),
-                decoration: const InputDecoration(
-                  labelStyle: TextStyle(
-                    color: Color.fromARGB(255, 255, 255, 255),
-                    fontSize: 20,
-                  ),
-                  labelText: 'Nome',
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    borderSide: BorderSide(
-                      color: Color.fromARGB(255, 187, 231, 161),
-                      width: 3,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    borderSide: BorderSide(
-                      color: Color.fromARGB(255, 187, 231, 161),
-                      width: 3,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 187, 231, 161),
-                foregroundColor: const Color.fromARGB(255, 0, 0, 0),
-                fixedSize: const Size(200, 70),
-              ),
-              onPressed: () {
-                if (name.text.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Introduza o seu nome'),
-                    ),
-                  );
-                } else {
-                  MyUser user2 = MyUser(name: name.text);
-                  Route route = MaterialPageRoute(
-                      builder: (context) => ScreenBuilder(user: user2));
-                  Navigator.pushReplacement(context, route);
-                }
-              },
-              child: const Text(
-                'Entrar',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
+            const SizedBox(height: 190),
             Icon(
               Icons.message,
               color: Theme.of(context).colorScheme.primary,
@@ -226,7 +177,7 @@ class LoginPage extends StatelessWidget {
               text: "Login",
               onTap: () async {
                 await signIn(emailController.text.trim(),
-                    passwordController.text.trim(), name.text, context);
+                    passwordController.text.trim(), context);
               },
             ),
             const SizedBox(

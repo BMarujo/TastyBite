@@ -105,8 +105,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> signUp(String email, String password, String passwordConfirm,
-      String name, context) async {
-    MyUser user2 = MyUser(name: name);
+      String nickname, context) async {
+    MyUser user2 = MyUser(name: nickname);
     if (password == passwordConfirm) {
       try {
         showDialog(
@@ -117,7 +117,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             );
           },
         );
-        await user.signUp(email, password);
+        await user.signUp(email, password, nickname);
         Route route =
             MaterialPageRoute(builder: (context) => ScreenBuilder(user: user2));
         Navigator.pushReplacement(context, route);
@@ -149,6 +149,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     var emailController = TextEditingController();
     var passwordController = TextEditingController();
     var pwConfirmController = TextEditingController();
+    var nicknameController =
+        TextEditingController(); // New controller for nickname
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 126, 178, 255),
       body: SafeArea(
@@ -173,6 +175,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(
                 height: 20,
+              ),
+              MyTextField(
+                hint: "Nickname", // New text field for nickname
+                obsecure: false,
+                controller: nicknameController,
+              ),
+              const SizedBox(
+                height: 10,
               ),
               MyTextField(
                 hint: "Email",
@@ -242,7 +252,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       emailController.text.trim(),
                       passwordController.text.trim(),
                       pwConfirmController.text.trim(),
-                      "seilá",
+                      nicknameController.text
+                          .trim(), // Get nickname from text field
                       context);
                 },
               ),
