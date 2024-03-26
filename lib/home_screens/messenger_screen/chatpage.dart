@@ -137,62 +137,54 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (authService.getCurrentuser() == null) {
-      scrollController = ScrollController();
-
-      return ListView(
-        controller: scrollController,
-      );
-    } else {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.receiverEmail),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          foregroundColor: Colors.grey,
-          elevation: 0,
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: MessageList(
-                receiverID: widget.receiverId,
-                controller: scrollController,
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.receiverEmail),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.grey,
+        elevation: 0,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: MessageList(
+              receiverID: widget.receiverId,
+              controller: scrollController,
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: MyTextField(
-                      hint: "Type a message....",
-                      obsecure: false,
-                      controller: controller,
-                      focusNode: myFocusNode,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: MyTextField(
+                    hint: "Type a message....",
+                    obsecure: false,
+                    controller: controller,
+                    focusNode: myFocusNode,
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(right: 20.0),
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.green,
+                  ),
+                  child: IconButton(
+                    onPressed: sendMessage,
+                    icon: const Icon(
+                      Icons.arrow_upward,
+                      color: Colors.white,
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(right: 20.0),
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.green,
-                    ),
-                    child: IconButton(
-                      onPressed: sendMessage,
-                      icon: const Icon(
-                        Icons.arrow_upward,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      );
-    }
+          ),
+        ],
+      ),
+    );
   }
 }
 

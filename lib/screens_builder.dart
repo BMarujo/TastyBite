@@ -8,11 +8,18 @@ import 'package:provider/provider.dart';
 import 'package:tastybite/home_screens/home_screen/home_screen.dart';
 import 'package:tastybite/home_screens/menu_screen.dart';
 import 'package:tastybite/home_screens/wallet_screen.dart';
-import 'package:tastybite/locator/service_locator.dart';
-import 'package:tastybite/auth_service/auth_service.dart';
 import 'package:tastybite/home_screens/map_screen.dart';
+import 'package:tastybite/util/logout.dart';
 
-final AuthServices _authServices = locator.get();
+class Helper extends StatelessWidget {
+  final MyUser user;
+  const Helper({super.key, required this.user});
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+        create: (context) => LogoutHelper(), child: ScreenBuilder(user: user));
+  }
+}
 
 class ScreenBuilder extends StatelessWidget {
   final MyUser user;
@@ -79,7 +86,8 @@ class ScreenBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (_authServices.getCurrentuser() == null) {
+    LogoutHelper logoutHelper = Provider.of<LogoutHelper>(context);
+    if (logoutHelper.balance == 1) {
       return const SplashScreen();
     } else {
       return ChangeNotifierProvider(

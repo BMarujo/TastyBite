@@ -113,7 +113,7 @@ class LoginPage extends StatelessWidget {
 
       // Navigate to the next screen
       Route route =
-          MaterialPageRoute(builder: (context) => ScreenBuilder(user: user2));
+          MaterialPageRoute(builder: (context) => Helper(user: user2));
       Navigator.pushReplacement(context, route);
     } on Exception catch (ex) {
       Navigator.pop(context);

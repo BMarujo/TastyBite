@@ -5,6 +5,7 @@ import 'package:tastybite/util/wallet.dart';
 import 'package:provider/provider.dart';
 import 'package:tastybite/locator/service_locator.dart';
 import 'package:tastybite/auth_service/auth_service.dart';
+import 'package:tastybite/util/logout.dart';
 
 class HomeScreen extends StatelessWidget {
   final MyUser user;
@@ -15,6 +16,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Wallet wallet = Provider.of<Wallet>(context);
 
+    LogoutHelper logoutHelper = Provider.of<LogoutHelper>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -50,7 +52,7 @@ class HomeScreen extends StatelessWidget {
               ),
               onTap: () async {
                 await AuthServices(locator.get(), locator.get())
-                    .signOut(context);
+                    .signOut(context, logoutHelper);
               },
             ),
             const SizedBox(height: 50),

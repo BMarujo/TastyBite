@@ -120,9 +120,7 @@ class BuilduserStreamList extends StatelessWidget {
   final Map<String, dynamic> userData;
   @override
   Widget build(BuildContext context) {
-    if (_authServices.getCurrentuser() == null) {
-      return Container();
-    } else if (userData['email'] != _authServices.getCurrentuser()!.email) {
+    if (userData['email'] != _authServices.getCurrentuser()!.email) {
       return UserTile(
         text: userData["email"],
         onTap: () {

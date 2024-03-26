@@ -118,7 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
         await user.signUp(email, password, nickname);
         Route route =
-            MaterialPageRoute(builder: (context) => ScreenBuilder(user: user2));
+            MaterialPageRoute(builder: (context) => Helper(user: user2));
         Navigator.pushReplacement(context, route);
       } on Exception catch (ex) {
         Navigator.pop(context);
