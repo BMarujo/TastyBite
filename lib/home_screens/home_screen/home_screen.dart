@@ -4,7 +4,7 @@ import 'package:tastybite/home_screens/home_screen/history.dart';
 import 'package:tastybite/util/wallet.dart';
 import 'package:provider/provider.dart';
 import 'package:tastybite/locator/service_locator.dart';
-import 'package:tastybite/auth_service/auth_service.dart';
+import 'package:tastybite/services/auth_service.dart';
 import 'package:tastybite/util/logout.dart';
 import 'package:tastybite/util/image.dart';
 

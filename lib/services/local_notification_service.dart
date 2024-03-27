@@ -1,46 +1,47 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 import 'package:rxdart/subjects.dart';
 
-class LocalNotificationServices{
+class LocalNotificationServices {
   LocalNotificationServices();
 
   final _localNotificationService = FlutterLocalNotificationsPlugin();
 
   final BehaviorSubject<String?> onNotificationClick = BehaviorSubject();
 
-  Future<void> initialize() async{
-    const AndroidInitializationSettings androidInitializationSettings = AndroidInitializationSettings('@drawable/ic_stat_delivery_dining');
+  Future<void> initialize() async {
+    const AndroidInitializationSettings androidInitializationSettings =
+        AndroidInitializationSettings('@drawable/ic_stat_delivery_dining');
 
-    IOSInitializationSettings iosInitializationSettings = IOSInitializationSettings(
+    IOSInitializationSettings iosInitializationSettings =
+        IOSInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
       onDidReceiveLocalNotification: onDidReceiveLocalNotification,
     );
 
-    
     final InitializationSettings settings = InitializationSettings(
       android: androidInitializationSettings,
       iOS: iosInitializationSettings,
     );
 
-    await _localNotificationService.initialize(settings, onSelectNotification: onSelectedNotification);
+    await _localNotificationService.initialize(settings,
+        onSelectNotification: onSelectedNotification);
   }
 
-  Future<NotificationDetails> _notificationDetails() async{
-    const AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
-      'channel_id',
-      'channel_name',
-      channelDescription: 'description',
-      importance: Importance.max,
-      priority: Priority.max,
-      playSound: true);
-  
-      const IOSNotificationDetails iosNotificationDetails = IOSNotificationDetails();
+  Future<NotificationDetails> _notificationDetails() async {
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails('channel_id', 'channel_name',
+            channelDescription: 'description',
+            importance: Importance.max,
+            priority: Priority.max,
+            playSound: true);
 
-      return const NotificationDetails(android: androidNotificationDetails, iOS: iosNotificationDetails);
+    const IOSNotificationDetails iosNotificationDetails =
+        IOSNotificationDetails();
+
+    return const NotificationDetails(
+        android: androidNotificationDetails, iOS: iosNotificationDetails);
   }
 
   /*
@@ -65,8 +66,7 @@ class LocalNotificationServices{
     required String title,
     required String body,
     required String payload,
-    
-  }) async{
+  }) async {
     final details = await _notificationDetails();
     await _localNotificationService.show(
       id,
@@ -77,14 +77,14 @@ class LocalNotificationServices{
     );
   }
 
-
-  void onDidReceiveLocalNotification(int id, String? title, String? body, String? payload){
-      print('id: $id');
+  void onDidReceiveLocalNotification(
+      int id, String? title, String? body, String? payload) {
+    print('id: $id');
   }
 
-  void onSelectedNotification(String? payload){
+  void onSelectedNotification(String? payload) {
     print('Payload: $payload');
-    if (payload != null && payload.isNotEmpty){
+    if (payload != null && payload.isNotEmpty) {
       onNotificationClick.add(payload);
     }
   }

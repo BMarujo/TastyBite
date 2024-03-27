@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tastybite/locator/service_locator.dart';
-import 'package:tastybite/auth_service/auth_service.dart';
+import 'package:tastybite/services/auth_service.dart';
 import 'package:tastybite/util/myuser.dart';
 import 'package:tastybite/login.dart';
 import 'package:tastybite/screens_builder.dart';

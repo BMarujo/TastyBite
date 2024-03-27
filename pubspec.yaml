@@ -41,7 +41,6 @@ dependencies:
   chat_bubbles: ^1.6.0
   flutter_spinkit: ^5.2.0
   flutter_local_notifications: ^9.6.0
-  timezone: ^0.8.0
   rxdart: ^0.27.4
   lottie: ^2.6.0
   cupertino_icons: ^1.0.2
@@ -74,8 +73,6 @@ flutter:
 
   assets:
     - assets/
-    - assets/imgs/
-    - assets/lottie/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
