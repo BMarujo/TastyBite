@@ -96,11 +96,24 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final user = AuthServices(locator.get(), locator.get());
   late AccountType _selectedAccountType;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController pwConfirmController = TextEditingController();
+  final TextEditingController nicknameController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _selectedAccountType = AccountType.client; // Default value
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    pwConfirmController.dispose();
+    nicknameController.dispose();
+    super.dispose();
   }
 
   Future<void> signUp(String email, String password, String passwordConfirm,
@@ -145,146 +158,127 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var emailController = TextEditingController();
-    var passwordController = TextEditingController();
-    var pwConfirmController = TextEditingController();
-    var nicknameController =
-        TextEditingController(); // New controller for nickname
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 126, 178, 255),
       body: SafeArea(
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.message,
-                color: Theme.of(context).colorScheme.primary,
-                size: 60,
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              Text(
-                "Let's create an account for you",
-                style: TextStyle(
-                  fontSize: 16,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.message,
                   color: Theme.of(context).colorScheme.primary,
+                  size: 60,
                 ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              MyTextField(
-                hint: "Nickname", // New text field for nickname
-                obsecure: false,
-                controller: nicknameController,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              MyTextField(
-                hint: "Email",
-                obsecure: false,
-                controller: emailController,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              MyTextField(
-                hint: "Password",
-                obsecure: true,
-                controller: passwordController,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              MyTextField(
-                hint: "Confirm Password",
-                obsecure: true,
-                controller: pwConfirmController,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: DropdownButtonFormField<AccountType>(
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0,
-                        horizontal: 25.0), // Adjust padding as needed
-                    border: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Color.fromARGB(
-                            255, 0, 0, 0), // Change the color to black
-                      ),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
+                const SizedBox(height: 40),
+                Text(
+                  "Let's create an account for you",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
-                  value: _selectedAccountType,
-                  onChanged: (AccountType? newValue) {
-                    setState(() {
-                      _selectedAccountType = newValue!;
-                    });
-                  },
-                  items: <AccountType>[
-                    AccountType.client,
-                    AccountType.deliveryguy,
-                  ].map<DropdownMenuItem<AccountType>>((AccountType value) {
-                    return DropdownMenuItem<AccountType>(
-                      value: value,
-                      child: Text(value == AccountType.client
-                          ? 'Client'
-                          : 'Delivery Guy'),
-                    );
-                  }).toList(),
                 ),
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              MyButton(
-                text: "Register",
-                onTap: () async {
-                  await signUp(
+                const SizedBox(height: 20),
+                MyTextField(
+                  hint: "Nickname",
+                  obsecure: false,
+                  controller: nicknameController,
+                ),
+                const SizedBox(height: 10),
+                MyTextField(
+                  hint: "Email",
+                  obsecure: false,
+                  controller: emailController,
+                ),
+                const SizedBox(height: 10),
+                MyTextField(
+                  hint: "Password",
+                  obsecure: true,
+                  controller: passwordController,
+                ),
+                const SizedBox(height: 10),
+                MyTextField(
+                  hint: "Confirm Password",
+                  obsecure: true,
+                  controller: pwConfirmController,
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: DropdownButtonFormField<AccountType>(
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 10.0,
+                          horizontal: 25.0), // Adjust padding as needed
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color.fromARGB(
+                              255, 0, 0, 0), // Change the color to black
+                        ),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    value: _selectedAccountType,
+                    onChanged: (AccountType? newValue) {
+                      setState(() {
+                        _selectedAccountType = newValue!;
+                      });
+                    },
+                    items: <AccountType>[
+                      AccountType.client,
+                      AccountType.deliveryguy,
+                    ].map<DropdownMenuItem<AccountType>>((AccountType value) {
+                      return DropdownMenuItem<AccountType>(
+                        value: value,
+                        child: Text(value == AccountType.client
+                            ? 'Client'
+                            : 'Delivery Guy'),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                const SizedBox(height: 25),
+                MyButton(
+                  text: "Register",
+                  onTap: () async {
+                    await signUp(
                       emailController.text.trim(),
                       passwordController.text.trim(),
                       pwConfirmController.text.trim(),
-                      nicknameController.text
-                          .trim(), // Get nickname from text field
-                      context);
-                },
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Already have an account? ",
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Route route =
-                          MaterialPageRoute(builder: (context) => LoginPage());
-                      Navigator.pushReplacement(context, route);
-                    },
-                    child: Text(
-                      "Login now",
+                      nicknameController.text.trim(),
+                      context,
+                    );
+                  },
+                ),
+                const SizedBox(height: 25),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Already have an account? ",
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    GestureDetector(
+                      onTap: () {
+                        Route route = MaterialPageRoute(
+                            builder: (context) => LoginPage());
+                        Navigator.pushReplacement(context, route);
+                      },
+                      child: Text(
+                        "Login now",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
