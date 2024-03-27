@@ -3,6 +3,8 @@ import 'package:tastybite/util/myuser.dart';
 import 'package:tastybite/util/wallet.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:tastybite/services/local_notification_service.dart';
+import 'package:tastybite/home_screens/second_screen.dart';
 
 class MenuItem {
   final String name;
@@ -18,10 +20,16 @@ class MenuItem {
   });
 }
 
-class MenuScreen extends StatelessWidget {
+class MenuScreen extends StatefulWidget {
   final MyUser user;
 
-  MenuScreen({super.key, required this.user});
+  MenuScreen({Key? key, required this.user}) : super(key: key);
+
+  @override
+  _MenuScreenState createState() => _MenuScreenState();
+}
+
+class _MenuScreenState extends State<MenuScreen> {
 
   final List<MenuItem> menuItems = [
     MenuItem(
@@ -62,6 +70,16 @@ class MenuScreen extends StatelessWidget {
     ),
     // Add more items as needed
   ];
+
+  late final LocalNotificationServices service;
+
+  @override
+  void initState() {
+    service = LocalNotificationServices();
+    service.initialize();
+    listenToNotification();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -160,16 +178,16 @@ class MenuScreen extends StatelessWidget {
                 // Confirm purchase and deduct the amount from the wallet
                 if (wallet.points >= 6) {
                   wallet.removePoints();
-                  user.addHistory(menuItem.name);
+                  widget.user.addHistory(menuItem.name);
                   DateTime now = DateTime.now();
                   String formattedDate =
                       DateFormat('EEE d MMM y\nkk:mm:ss', 'pt_PT').format(now);
-                  user.addDate(formattedDate);
+                  widget.user.addDate(formattedDate);
                   // Optionally, you can perform other actions here
                   // such as sending the order to the server
                   // or updating the cart state.
                   Navigator.pop(context); // Close the dialog
-                  _showSuccessDialog2(context);
+                  _showSuccessDialog2(context, menuItem.name);
                 } else {
                   if (menuItem.price > wallet.balance) {
                     Navigator.pop(context); // Close the dialog
@@ -177,17 +195,17 @@ class MenuScreen extends StatelessWidget {
                   } else {
                     wallet.withdraw(menuItem.price);
                     wallet.addPoint();
-                    user.addHistory(menuItem.name);
+                    widget.user.addHistory(menuItem.name);
                     DateTime now = DateTime.now();
                     String formattedDate =
                         DateFormat('EEE d MMM y\nkk:mm:ss', 'pt_PT')
                             .format(now);
-                    user.addDate(formattedDate);
+                    widget.user.addDate(formattedDate);
                     // Optionally, you can perform other actions here
                     // such as sending the order to the server
                     // or updating the cart state.
                     Navigator.pop(context); // Close the dialog
-                    _showSuccessDialog(context);
+                    _showSuccessDialog(context, menuItem.name);
                   }
                 }
               },
@@ -199,7 +217,7 @@ class MenuScreen extends StatelessWidget {
     );
   }
 
-  void _showSuccessDialog(BuildContext context) {
+  void _showSuccessDialog(BuildContext context, String itemName) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -208,8 +226,9 @@ class MenuScreen extends StatelessWidget {
           content: const Text('Obrigado pela sua compra!'),
           actions: [
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async{
                 Navigator.pop(context); // Close the dialog
+                await service.showNotificationWithPayload(id: 0, title: 'Tasty Bite', body: 'Obrigado pela sua compra!', payload: itemName);
               },
               child: const Text('OK'),
             ),
@@ -219,7 +238,7 @@ class MenuScreen extends StatelessWidget {
     );
   }
 
-  void _showSuccessDialog2(BuildContext context) {
+  void _showSuccessDialog2(BuildContext context, String itemName) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -228,8 +247,9 @@ class MenuScreen extends StatelessWidget {
           content: const Text('Você usou os seus pontos!'),
           actions: [
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async{
                 Navigator.pop(context); // Close the dialog
+                await service.showNotificationWithPayload(id: 0, title: 'Tasty Bite', body: 'Obrigado pela sua compra!', payload: itemName);
               },
               child: const Text('OK'),
             ),
@@ -258,5 +278,14 @@ class MenuScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  void listenToNotification() => service.onNotificationClick.stream.listen(onNotificationListener);
+
+  void onNotificationListener(String? payload) {
+    if (payload != null && payload.isNotEmpty) {
+      print('Payload: $payload');
+      Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage(payload: payload)));
+    }
   }
 }
