@@ -6,21 +6,33 @@ import 'package:provider/provider.dart';
 import 'package:tastybite/locator/service_locator.dart';
 import 'package:tastybite/auth_service/auth_service.dart';
 import 'package:tastybite/util/logout.dart';
+import 'package:tastybite/util/image.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final MyUser user;
-
   const HomeScreen({super.key, required this.user});
+  @override
+  State<HomeScreen> createState() => HomeScreenState();
+}
+
+class HomeScreenState extends State<HomeScreen> {
+  String imageUrl = "";
+
+  void onImageChanged(String newValue) {
+    setState(() {
+      imageUrl = newValue;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     Wallet wallet = Provider.of<Wallet>(context);
-
     LogoutHelper logoutHelper = Provider.of<LogoutHelper>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Olá, ${user.getname}!',
+          'Olá, ${widget.user.getname}!',
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 40,
@@ -44,7 +56,16 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            ImagePickerWidget(
+              onValueChanged: onImageChanged,
+              edit: "",
+            ),
+            const SizedBox(height: 40),
             ListTile(
+              trailing: Icon(
+                Icons.person_off_outlined,
+                color: Theme.of(context).colorScheme.primary,
+              ),
               title: const Text("Logout"),
               leading: Icon(
                 Icons.logout,
@@ -55,9 +76,7 @@ class HomeScreen extends StatelessWidget {
                     .signOut(context, logoutHelper);
               },
             ),
-            const SizedBox(height: 50),
-            Image.asset('assets/qrcode.png', width: 200, height: 200),
-            const SizedBox(height: 75),
+            const SizedBox(height: 40),
             const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -77,7 +96,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 50),
+            const SizedBox(height: 20),
             Text(
               'Os teus Pontos: ${wallet.points}',
               style: const TextStyle(
@@ -85,11 +104,11 @@ class HomeScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: Colors.white),
             ),
-            const SizedBox(height: 50),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Route route = MaterialPageRoute(
-                    builder: (context) => HistoryPage(user: user));
+                    builder: (context) => HistoryPage(user: widget.user));
                 Navigator.push(context, route);
               },
               style: ElevatedButton.styleFrom(

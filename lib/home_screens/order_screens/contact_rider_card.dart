@@ -11,7 +11,7 @@ class ContactRiderCard extends StatelessWidget {
         side: BorderSide(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(3),
       ),
-      leading: Image.asset('assets/images/avatar.png'),
+      leading: Image.asset('assets/imgs/avatar.png'),
       title: const Text('Contact your rider'),
       subtitle: const Text('Add delivery instructions'),
       trailing: const Icon(

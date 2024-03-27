@@ -51,7 +51,7 @@ class MessengerScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.grey,
         elevation: 0,
-        title: const Text("HOME"),
+        title: const Text("Mensagens"),
         centerTitle: true,
       ),
       body: const BuildUserList(),

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:tastybite/services/local_notification_service.dart';
 import 'package:tastybite/home_screens/second_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MenuItem {
   final String name;
@@ -227,6 +228,15 @@ class _MenuScreenState extends State<MenuScreen> {
           actions: [
             ElevatedButton(
               onPressed: () async{
+                print("Data: ${DateTime.now()}");
+                // add item data to firestore colletion orders
+                await FirebaseFirestore.instance.collection('orders').add({
+                  'deliveryman': 'Delivery Guy',
+                  'name': itemName,
+                  'time': '20 min',
+                  'orderTime': DateTime.now(),
+                });
+
                 Navigator.pop(context); // Close the dialog
                 await service.showNotificationWithPayload(id: 0, title: 'Tasty Bite', body: 'Obrigado pela sua compra!', payload: itemName);
               },
