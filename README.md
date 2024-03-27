@@ -22,3 +22,4 @@ Henrique Coelho XXXXXX:
 - Notifications
 - Tracking Page
 - GPS Location ???
+- Accelometer and Gyroscope ???
