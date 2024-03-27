@@ -117,7 +117,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> signUp(String email, String password, String passwordConfirm,
-      String nickname, context) async {
+      String nickname, String type, context) async {
     MyUser user2 = MyUser(name: nickname);
     if (password == passwordConfirm) {
       try {
@@ -129,7 +129,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             );
           },
         );
-        await user.signUp(email, password, nickname);
+        await user.signUp(email, password, nickname, type);
         Route route =
             MaterialPageRoute(builder: (context) => Helper(user: user2));
         Navigator.pushReplacement(context, route);
@@ -247,6 +247,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       passwordController.text.trim(),
                       pwConfirmController.text.trim(),
                       nicknameController.text.trim(),
+                      _selectedAccountType == AccountType.client
+                          ? "client"
+                          : "deliveryguy",
                       context,
                     );
                   },

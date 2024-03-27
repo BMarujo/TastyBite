@@ -17,12 +17,8 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   String imageUrl = "";
-  @override
-  void initState() {
-    super.initState();
-  }
 
-  void onValueChanged(String newValue) {
+  void onImageChanged(String newValue) {
     setState(() {
       imageUrl = newValue;
     });
@@ -31,8 +27,8 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     Wallet wallet = Provider.of<Wallet>(context);
-
     LogoutHelper logoutHelper = Provider.of<LogoutHelper>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -60,7 +56,10 @@ class HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ImagePickerWidget(onValueChanged: onValueChanged, edit: ""),
+            ImagePickerWidget(
+              onValueChanged: onImageChanged,
+              edit: "",
+            ),
             const SizedBox(height: 40),
             ListTile(
               trailing: Icon(

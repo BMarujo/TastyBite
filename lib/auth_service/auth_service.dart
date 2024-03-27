@@ -27,7 +27,7 @@ class AuthServices {
     x.deposit();
   }
 
-  Future<UserCredential> signUp(String email, password, nickname) async {
+  Future<UserCredential> signUp(String email, password, nickname, type) async {
     try {
       final UserCredential userCredential = await user
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -41,6 +41,7 @@ class AuthServices {
           "uid": userCredential.user!.uid,
           "email": email,
           "name": nickname,
+          "type": type,
         },
       );
 

@@ -5,6 +5,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tastybite/locator/service_locator.dart';
+
+final FirebaseAuth _auth = locator.get();
+final FirebaseFirestore _firestore = locator.get();
 
 class ImagePickerWidget extends StatefulWidget {
   final ValueChanged<String> onValueChanged;
@@ -18,7 +24,35 @@ class ImagePickerWidget extends StatefulWidget {
 
 class _ImagePickerWidgetState extends State<ImagePickerWidget> {
   File? _image;
-  late String _imageUrl;
+  late String _imageUrl =
+      'https://thumbs.dreamstime.com/b/image-edit-tool-outline-icon-image-edit-tool-outline-icon-linear-style-sign-mobile-concept-web-design-photo-gallery-135346318.jpg';
+
+  @override
+  void initState() {
+    super.initState();
+    // Check if there is already an image associated with the current user
+    _checkUserImage();
+  }
+
+  Future<void> _checkUserImage() async {
+    try {
+      // Get the current user
+      final User? currentUser = _auth.currentUser;
+      if (currentUser != null) {
+        // Retrieve the user document from Firestore
+        final DocumentSnapshot userDoc =
+            await _firestore.collection('Users').doc(currentUser.uid).get();
+        // Check if the user document contains an image URL
+        if (userDoc.exists && userDoc['image'] != null) {
+          setState(() {
+            _imageUrl = userDoc['image'];
+          });
+        }
+      }
+    } catch (e) {
+      print('Error checking user image: $e');
+    }
+  }
 
   Future getImage(ImageSource source) async {
     try {
@@ -30,7 +64,22 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
       setState(() {
         _image = imagePermanent;
       });
+
+      // Upload image to Firebase Storage
       final imageUrl = await uploadImageToFirebase(_image!);
+
+      // Get current user
+      final User? currentUser = _auth.currentUser;
+      if (currentUser != null) {
+        // Update Firestore document with image URL
+        await _firestore.collection('Users').doc(currentUser.uid).set(
+          {
+            'image': imageUrl,
+          },
+          SetOptions(merge: true), // Merge with existing document
+        );
+      }
+
       widget.onValueChanged(imageUrl);
       _imageUrl = imageUrl;
       setState(() {
@@ -83,19 +132,12 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
               const SizedBox(
                 height: 0,
               ),
-              _image != null
-                  ? Image.file(
-                      _image!,
-                      width: 200,
-                      height: 180,
-                      fit: BoxFit.cover,
-                    )
-                  : Image.network(
-                      'https://thumbs.dreamstime.com/b/image-edit-tool-outline-icon-image-edit-tool-outline-icon-linear-style-sign-mobile-concept-web-design-photo-gallery-135346318.jpg',
-                      width: 200,
-                      height: 180,
-                      fit: BoxFit.cover,
-                    ),
+              Image.network(
+                _imageUrl,
+                width: 200,
+                height: 180,
+                fit: BoxFit.cover,
+              ),
               const SizedBox(
                 height: 5,
               ),
