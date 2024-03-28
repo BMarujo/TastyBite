@@ -149,7 +149,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         context: context,
         builder: (context) {
           return const AlertDialog(
-            content: Text("Passwords don't match"),
+            content: Text("Passwords não coincidem!"),
           );
         },
       );
@@ -173,7 +173,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 40),
                 Text(
-                  "Let's create an account for you",
+                  "Vamos criar a tua conta!",
                   style: TextStyle(
                     fontSize: 16,
                     color: Theme.of(context).colorScheme.primary,
@@ -199,7 +199,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 10),
                 MyTextField(
-                  hint: "Confirm Password",
+                  hint: "Confirmar Password",
                   obsecure: true,
                   controller: pwConfirmController,
                 ),
@@ -232,15 +232,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return DropdownMenuItem<AccountType>(
                         value: value,
                         child: Text(value == AccountType.client
-                            ? 'Client'
-                            : 'Delivery Guy'),
+                            ? 'Cliente'
+                            : 'Entregador'),
                       );
                     }).toList(),
                   ),
                 ),
                 const SizedBox(height: 25),
                 MyButton(
-                  text: "Register",
+                  text: "Criar Conta",
                   onTap: () async {
                     await signUp(
                       emailController.text.trim(),
@@ -259,7 +259,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Already have an account? ",
+                      "Já tens conta? ",
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                       ),
@@ -271,7 +271,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Navigator.pushReplacement(context, route);
                       },
                       child: Text(
-                        "Login now",
+                        "Login aqui!",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).colorScheme.primary,

@@ -159,7 +159,7 @@ class _ChatScreenState extends State<ChatScreen> {
               children: [
                 Expanded(
                   child: MyTextField(
-                    hint: "Type a message....",
+                    hint: "Escrever uma mensagem....",
                     obsecure: false,
                     controller: controller,
                     focusNode: myFocusNode,

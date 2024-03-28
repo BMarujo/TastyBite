@@ -148,7 +148,7 @@ class LoginPage extends StatelessWidget {
               height: 40,
             ),
             Text(
-              "Welcome back, You've been missed",
+              "Bem Vindo ao TastyBite",
               style: TextStyle(
                 fontSize: 16,
                 color: Theme.of(context).colorScheme.primary,
@@ -187,7 +187,7 @@ class LoginPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Not a member? ",
+                  "Novo utilizador?",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -199,7 +199,7 @@ class LoginPage extends StatelessWidget {
                     Navigator.pushReplacement(context, route);
                   },
                   child: Text(
-                    "Register now",
+                    " Crie uma conta",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.primary,

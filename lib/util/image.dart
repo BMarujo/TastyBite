@@ -142,7 +142,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                 height: 5,
               ),
               customButton(
-                title: 'Pick from Gallery',
+                title: 'Escolher da galeria',
                 icon: Icons.image_outlined,
                 onClick: () => getImage(ImageSource.gallery),
               ),
@@ -150,7 +150,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                 height: 5,
               ),
               customButton(
-                title: 'Take a picture',
+                title: 'Tirar uma foto',
                 icon: Icons.camera_alt,
                 onClick: () => getImage(ImageSource.camera),
               ),
@@ -173,7 +173,7 @@ Widget customButton(
       child: Row(
         children: [
           Icon(icon),
-          const SizedBox(width: 10),
+          const SizedBox(width: 5),
           Text(title),
         ],
       ),

@@ -236,9 +236,9 @@ class _MenuScreenState extends State<MenuScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text('Prato: ${menuItem.name}'),
-              Text('Preço: \$${menuItem.price.toStringAsFixed(2)}'),
+              Text('Preço: ${menuItem.price.toStringAsFixed(2)}€'),
               const Divider(),
-              Text('Saldo atual: \$${wallet.balance.toStringAsFixed(2)}'),
+              Text('Saldo atual: ${wallet.balance.toStringAsFixed(2)}€'),
             ],
           ),
           actions: [
@@ -513,7 +513,7 @@ class _MenuScreenState extends State<MenuScreen> {
       }
     } catch (e) {
       // Lida com erros e retorna null em caso de falha
-      print('Erro ao buscar entregador disponível: $e');
+      print('Erro ao procurar entregador disponível: $e');
       return null;
     }
   }
