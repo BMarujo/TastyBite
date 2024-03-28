@@ -13,6 +13,7 @@ class Wallet extends ChangeNotifier {
   int points = 0;
 
   int get getPoints => points;
+
   Future<void> deposit(double amount) async {
     _balance += amount;
     await _firestore
@@ -42,6 +43,26 @@ class Wallet extends ChangeNotifier {
     }
   }
 
+  Future<void> getPointsFromFirebase() async {
+    try {
+      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(_auth.currentUser!.uid)
+          .get();
+
+      final data = snapshot.data() as Map<String, dynamic>?;
+
+      if (data == null || !data.containsKey('points')) {
+        throw Exception('Points data not available');
+      }
+
+      points = data['points'];
+    } catch (e) {
+      // Handle errors, e.g., logging or notifying the user
+      print('Error retrieving points: $e');
+    }
+  }
+
   Future<void> withdraw(double amount) async {
     _balance -= amount;
     await _firestore
@@ -51,13 +72,26 @@ class Wallet extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addPoint() {
-    points += 1;
+  Future<void> addPoint(int amount) async {
+    points += amount;
+    await _updatePointsInFirestore();
     notifyListeners();
   }
 
-  void removePoints() {
+  Future<void> removePoints() async {
     points = 0;
+    await _updatePointsInFirestore();
     notifyListeners();
+  }
+
+  Future<void> _updatePointsInFirestore() async {
+    try {
+      await _firestore
+          .collection('Users')
+          .doc(_auth.currentUser!.uid)
+          .set({'points': points}, SetOptions(merge: true));
+    } catch (e) {
+      print('Error updating points in Firestore: $e');
+    }
   }
 }

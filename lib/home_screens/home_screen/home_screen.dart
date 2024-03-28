@@ -29,6 +29,7 @@ class HomeScreenState extends State<HomeScreen> {
     Wallet wallet = Provider.of<Wallet>(context);
     LogoutHelper logoutHelper = Provider.of<LogoutHelper>(context);
     wallet.getBalanceFromFirebase();
+    wallet.getPointsFromFirebase();
     return Scaffold(
       appBar: AppBar(
         title: Text(

@@ -252,7 +252,7 @@ class _MenuScreenState extends State<MenuScreen> {
               onPressed: () async {
                 // Confirm purchase and deduct the amount from the wallet
                 if (wallet.points >= 6) {
-                  wallet.removePoints();
+                  await wallet.removePoints();
                   widget.user.addHistory(menuItem.name);
                   DateTime now = DateTime.now();
                   String formattedDate =
@@ -270,7 +270,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     _showUnsuccessDialog(context);
                   } else {
                     await wallet.withdraw(menuItem.price);
-                    wallet.addPoint();
+                    await wallet.addPoint(1);
                     widget.user.addHistory(menuItem.name);
                     DateTime now = DateTime.now();
                     String formattedDate =
