@@ -18,7 +18,7 @@ class AnimatedStepBar extends StatelessWidget {
     this.roundedEdges,
     this.height = 4.0,
     this.currentStep = 0,
-    this.selectedColor = Colors.pink,
+    this.selectedColor = Colors.blue,
     this.unselectedColor = Colors.grey,
     this.padding = 3.0,
     this.fallbackLength = 100.0,

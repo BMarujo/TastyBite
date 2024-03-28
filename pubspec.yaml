@@ -48,6 +48,8 @@ dependencies:
   path_provider: ^2.0.15
   path: ^1.9.0
   firebase_storage: ^11.6.11
+  geolocator: ^11.0.0
+  geocoding: ^3.0.0
   
 dev_dependencies:
   flutter_test:
@@ -73,6 +75,8 @@ flutter:
 
   assets:
     - assets/
+    - assets/imgs/
+    - assets/lottie/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

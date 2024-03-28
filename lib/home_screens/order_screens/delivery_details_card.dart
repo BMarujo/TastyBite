@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class DeliveryDetailsCard extends StatelessWidget {
-  const DeliveryDetailsCard({super.key});
+  final Map<String, dynamic> orderData;
+
+  const DeliveryDetailsCard({
+    Key? key,
+    required this.orderData,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +18,7 @@ class DeliveryDetailsCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.location_on_outlined, color: Colors.pink, size: 28),
+              const Icon(Icons.location_on_outlined, color: Colors.blue, size: 28),
               const SizedBox(width: 16),
               const Text(
                 'Delivery details',
@@ -22,23 +27,12 @@ class DeliveryDetailsCard extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const Spacer(),
-              TextButton(
-                onPressed: () {},
-                style: TextButton.styleFrom(
-                  minimumSize: const Size(20, 20),
-                  foregroundColor: Colors.pink,
-                  textStyle: const TextStyle(fontSize: 17),
-                ),
-                child: const Text('Edit'),
-              ),
             ],
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Oranienburger Strabe 70, 10117 Berlin\n'
-            'Country yard building, 2nd floor',
-            style: TextStyle(
+          Text(
+            '${orderData['deliveryAddress']}\n',
+            style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w400,
             ),
@@ -59,7 +53,7 @@ class DeliveryDetailsCard extends StatelessWidget {
                     child: Text('\u275E', style: TextStyle(color: Colors.grey.shade800)),
                   ),
                 ),
-                const TextSpan(text: '  Please don’t ring the bell, my kids are sleeping'),
+                const TextSpan(text: '  Please call me on arrival'),
               ],
             ),
           ),
@@ -74,7 +68,7 @@ class DeliveryDetailsCard extends StatelessWidget {
               children: [
                 const TextSpan(text: 'Delivered by'),
                 TextSpan(
-                  text: ' San pellegrino',
+                  text: ' ${orderData['deliveryman']}',
                   style: TextStyle(
                     color: Colors.blueGrey[800],
                     fontWeight: FontWeight.bold,

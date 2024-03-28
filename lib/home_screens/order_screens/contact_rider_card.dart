@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ContactRiderCard extends StatelessWidget {
-  const ContactRiderCard({super.key});
+  final String deliverymanName;
+
+  const ContactRiderCard({
+    Key? key,
+    required this.deliverymanName,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,13 +17,15 @@ class ContactRiderCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(3),
       ),
       leading: Image.asset('assets/imgs/avatar.png'),
-      title: const Text('Contact your rider'),
-      subtitle: const Text('Add delivery instructions'),
+      title: Text('Contact $deliverymanName'),
+      //subtitle: const Text('Add delivery instructions'),
+      /*
       trailing: const Icon(
         Icons.message_outlined,
         size: 30,
-        color: Colors.pink,
+        color: Colors.blue,
       ),
+      */
       titleTextStyle: const TextStyle(
         fontSize: 18,
         color: Colors.black,

@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:tastybite/home_screens/home_screen/home_screen.dart';
 import 'package:tastybite/home_screens/menu_screen.dart';
 import 'package:tastybite/home_screens/wallet_screen.dart';
-import 'package:tastybite/home_screens/map_screen.dart';
+import 'package:tastybite/home_screens/orders_status_screen.dart';
 import 'package:tastybite/util/logout.dart';
 
 class Helper extends StatelessWidget {
@@ -32,7 +32,7 @@ class ScreenBuilder extends StatelessWidget {
   List<Widget> _buildScreens() {
     return [
       MenuScreen(user: user),
-      const OrderLocationScreen(),
+      const OrdersStatusScreen(),
       HomeScreen(user: user),
       const WalletScreen(),
       const MessengerScreen(),
@@ -51,11 +51,11 @@ class ScreenBuilder extends StatelessWidget {
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(
-          Icons.map,
+          Icons.delivery_dining,
           size: 35,
           weight: 20,
         ),
-        title: ("Mapa"),
+        title: ("Orders"),
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(

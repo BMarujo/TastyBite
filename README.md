@@ -18,8 +18,9 @@ Bernardo Marujo 107322:
 - Live Messaging Service
 - Camera and File System Access to change profile picture. 
 
-Henrique Coelho XXXXXX:
+Henrique Coelho 108342:
 - Notifications
-- Tracking Page
-- GPS Location ???
+- Tracking/Order Page
+- Firestore Database to store Orders info
+- GPS Location (with Permission Request)
 - Accelometer and Gyroscope ???

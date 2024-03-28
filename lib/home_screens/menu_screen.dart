@@ -4,8 +4,13 @@ import 'package:tastybite/util/wallet.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:tastybite/services/local_notification_service.dart';
-import 'package:tastybite/home_screens/second_screen.dart';
+import 'package:tastybite/home_screens/order_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tastybite/locator/service_locator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+
 
 class MenuItem {
   final String name;
@@ -21,6 +26,16 @@ class MenuItem {
   });
 }
 
+final FirebaseAuth _auth = locator.get();
+
+final Map<String, dynamic> orderData = {
+  'user': 'John Doe',
+  'deliveryman': 'Jane Doe',
+  'name': 'GRELHADO',
+  'time': '20 min',
+  'orderTime': '12:00',
+};
+
 class MenuScreen extends StatefulWidget {
   final MyUser user;
 
@@ -31,6 +46,71 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
+
+  // for location permission,...
+  String? _currentAddress;
+  Position? _currentPosition;
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location services are disabled. Please enable the services')));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location permissions are permanently denied, we cannot request permissions.')));
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() => _currentPosition = position);
+      _getAddressFromLatLng(_currentPosition!);
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  Future<void> _getAddressFromLatLng(Position position) async {
+    await placemarkFromCoordinates(
+            _currentPosition!.latitude, _currentPosition!.longitude)
+        .then((List<Placemark> placemarks) {
+      Placemark place = placemarks[0];
+      setState(() {
+        _currentAddress =
+            '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
+      });
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+  // for location permission,...
+
+
+
+
 
   final List<MenuItem> menuItems = [
     MenuItem(
@@ -175,7 +255,7 @@ class _MenuScreenState extends State<MenuScreen> {
               child: const Text('Cancelar'),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async{
                 // Confirm purchase and deduct the amount from the wallet
                 if (wallet.points >= 6) {
                   wallet.removePoints();
@@ -187,6 +267,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   // Optionally, you can perform other actions here
                   // such as sending the order to the server
                   // or updating the cart state.
+                  await _getCurrentPosition();
                   Navigator.pop(context); // Close the dialog
                   _showSuccessDialog2(context, menuItem.name);
                 } else {
@@ -205,6 +286,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     // Optionally, you can perform other actions here
                     // such as sending the order to the server
                     // or updating the cart state.
+                    await _getCurrentPosition();
                     Navigator.pop(context); // Close the dialog
                     _showSuccessDialog(context, menuItem.name);
                   }
@@ -221,6 +303,7 @@ class _MenuScreenState extends State<MenuScreen> {
   void _showSuccessDialog(BuildContext context, String itemName) {
     showDialog(
       context: context,
+      barrierDismissible: false, // Não permite fechar o diálogo clicando fora dele
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text(' Sucesso!'),
@@ -228,17 +311,58 @@ class _MenuScreenState extends State<MenuScreen> {
           actions: [
             ElevatedButton(
               onPressed: () async{
-                print("Data: ${DateTime.now()}");
-                // add item data to firestore colletion orders
-                await FirebaseFirestore.instance.collection('orders').add({
-                  'deliveryman': 'Delivery Guy',
-                  'name': itemName,
-                  'time': '20 min',
-                  'orderTime': DateTime.now(),
-                });
 
-                Navigator.pop(context); // Close the dialog
-                await service.showNotificationWithPayload(id: 0, title: 'Tasty Bite', body: 'Obrigado pela sua compra!', payload: itemName);
+                // POR ANTES DE SER CHAMADA A FUNÇÃO
+
+                // Tenta obter o entregador disponível
+                DocumentSnapshot<Map<String, dynamic>>? deliveryGuySnapshot = await getAvailableDeliveryGuy();
+
+                // Verifica se um entregador está disponível
+                if (deliveryGuySnapshot != null) {
+                  // Se um entregador estiver disponível, obtemos os detalhes do entregador
+                  Map<String, dynamic> deliveryGuyData = deliveryGuySnapshot.data()!;
+                  String deliverymanName = deliveryGuyData['name'];
+
+                  final User? user = _auth.currentUser;
+
+                  if (user == null) {
+                    print('Usuário não autenticado.');
+                    return;
+                  }
+
+                  final String name = await FirebaseFirestore.instance.collection('Users').doc(user.uid).get().then((value) => value.data()!['name']);
+
+                  // Adiciona um novo pedido à coleção 'orders' com o entregador atribuído
+                  await FirebaseFirestore.instance.collection('orders').add({
+                    'user': name,
+                    'deliveryman': deliverymanName,
+                    'name': itemName,
+                    'time': 20,
+                    'orderTime': '${DateTime.now().hour}:${DateTime.now().minute}',
+                    'deliveryAddress': _currentAddress,
+                  });
+
+                  // update orderData
+                  orderData['user'] = name;
+                  orderData['deliveryman'] = deliverymanName;
+                  orderData['name'] = itemName;
+                  orderData['time'] = 20;
+                  orderData['orderTime'] = '${DateTime.now().hour}:${DateTime.now().minute}';
+                  orderData['deliveryAddress'] = _currentAddress;
+
+                  // Fecha o diálogo após o pedido ter sido feito
+                  Navigator.pop(context);
+
+                  // Mostra a notificação ao usuário
+                  await service.showNotificationWithPayload(
+                    id: 0,
+                    title: 'Tasty Bite',
+                    body: 'Clica para ver o estado do Pedido!',
+                    payload: itemName,
+                  );
+                } else {
+                  print('Nenhum entregador disponível no momento.');
+                }
               },
               child: const Text('OK'),
             ),
@@ -251,15 +375,64 @@ class _MenuScreenState extends State<MenuScreen> {
   void _showSuccessDialog2(BuildContext context, String itemName) {
     showDialog(
       context: context,
+      barrierDismissible: false, // Não permite fechar o diálogo clicando fora dele
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Sucesso!'),
           content: const Text('Você usou os seus pontos!'),
           actions: [
             ElevatedButton(
-              onPressed: () async{
-                Navigator.pop(context); // Close the dialog
-                await service.showNotificationWithPayload(id: 0, title: 'Tasty Bite', body: 'Obrigado pela sua compra!', payload: itemName);
+              onPressed: () async {
+                // Tenta obter o entregador disponível
+                DocumentSnapshot<Map<String, dynamic>>? deliveryGuySnapshot = await getAvailableDeliveryGuy();
+
+                // Verifica se um entregador está disponível
+                if (deliveryGuySnapshot != null) {
+                  // Se um entregador estiver disponível, obtemos os detalhes do entregador
+                  Map<String, dynamic> deliveryGuyData = deliveryGuySnapshot.data()!;
+                  String deliverymanName = deliveryGuyData['name'];
+
+                  final User? user = _auth.currentUser;
+
+                  if (user == null) {
+                    print('Utilizador não autenticado.');
+                    return;
+                  }
+
+                  final String name = await FirebaseFirestore.instance.collection('Users').doc(user.uid).get().then((value) => value.data()!['name']);
+
+                  // Adiciona um novo pedido à coleção 'orders' com o entregador atribuído
+                  await FirebaseFirestore.instance.collection('orders').add({
+                    'user': name,
+                    'deliveryman': deliverymanName,
+                    'name': itemName,
+                    'time': 20,
+                    'orderTime': '${DateTime.now().hour}:${DateTime.now().minute}',
+                    'deliveryAddress': _currentAddress ,
+                  });
+
+                  // update orderData
+                  orderData['user'] = name;
+                  orderData['deliveryman'] = deliverymanName;
+                  orderData['name'] = itemName;
+                  orderData['time'] = 20;
+                  orderData['orderTime'] = '${DateTime.now().hour}:${DateTime.now().minute}';
+                  orderData['deliveryAddress'] = _currentAddress;
+
+                  // Fecha o diálogo após o pedido ter sido feito
+                  Navigator.pop(context);
+
+                  // Mostra a notificação ao usuário
+                  await service.showNotificationWithPayload(
+                    id: 0,
+                    title: 'Tasty Bite',
+                    body: 'Clica para ver o estado do Pedido!',
+                    payload: itemName,
+                  );
+                } else {
+                  // Se nenhum entregador estiver disponível, imprime uma mensagem ou executa outra lógica de tratamento
+                  print('Nenhum entregador disponível no momento.');
+                }
               },
               child: const Text('OK'),
             ),
@@ -295,7 +468,33 @@ class _MenuScreenState extends State<MenuScreen> {
   void onNotificationListener(String? payload) {
     if (payload != null && payload.isNotEmpty) {
       print('Payload: $payload');
-      Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage(payload: payload)));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => OrderPage(orderData: orderData)));
+    }
+  }
+
+  Future<DocumentSnapshot<Map<String, dynamic>>?> getAvailableDeliveryGuy() async {
+    try {
+      // Referência para a coleção 'Users'
+      CollectionReference<Map<String, dynamic>> usersCollection = FirebaseFirestore.instance.collection('Users');
+
+      // Consulta para filtrar os usuários do tipo 'deliveryguy' e disponíveis
+      Query<Map<String, dynamic>> query = usersCollection.where('type', isEqualTo: 'deliveryguy').where('available', isEqualTo: true).limit(1);
+
+      // Obtém os documentos que satisfazem a consulta
+      QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
+
+      // Verifica se há documentos retornados
+      if (snapshot.docs.isNotEmpty) {
+        // Retorna o primeiro documento encontrado
+        return snapshot.docs.first;
+      } else {
+        // Retorna null se nenhum usuário disponível for encontrado
+        return null;
+      }
+    } catch (e) {
+      // Lida com erros e retorna null em caso de falha
+      print('Erro ao buscar entregador disponível: $e');
+      return null;
     }
   }
 }
