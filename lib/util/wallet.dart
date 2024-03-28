@@ -61,6 +61,7 @@ class Wallet extends ChangeNotifier {
       // Handle errors, e.g., logging or notifying the user
       print('Error retrieving points: $e');
     }
+    notifyListeners();
   }
 
   Future<void> withdraw(double amount) async {

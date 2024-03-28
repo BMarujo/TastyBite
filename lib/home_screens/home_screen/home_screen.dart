@@ -18,6 +18,15 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   String imageUrl = "";
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<Wallet>(context, listen: false).getPointsFromFirebase();
+      Provider.of<Wallet>(context, listen: false).getBalanceFromFirebase();
+    });
+  }
+
   void onImageChanged(String newValue) {
     setState(() {
       imageUrl = newValue;
@@ -28,8 +37,6 @@ class HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     Wallet wallet = Provider.of<Wallet>(context);
     LogoutHelper logoutHelper = Provider.of<LogoutHelper>(context);
-    wallet.getBalanceFromFirebase();
-    wallet.getPointsFromFirebase();
     return Scaffold(
       appBar: AppBar(
         title: Text(
