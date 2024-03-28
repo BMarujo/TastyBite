@@ -101,23 +101,74 @@ class BuildUserList extends StatelessWidget {
             ),
           );
         }
+
+        final List<Map<String, dynamic>> users =
+            snapshot.data as List<Map<String, dynamic>>;
+        final List<Map<String, dynamic>> deliveryGuys = [];
+        final List<Map<String, dynamic>> clients = [];
+
+        for (final userData in users) {
+          if (userData['type'] == 'deliveryguy') {
+            deliveryGuys.add(userData);
+          } else if (userData['type'] == 'client') {
+            clients.add(userData);
+          }
+        }
+
         return ListView(
-          children: snapshot.data!
-              .map<Widget>(
-                (userData) => BuilduserStreamList(
-                  userData: userData,
-                ),
-              )
-              .toList(),
+          children: [
+            if (deliveryGuys.isNotEmpty)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: Text(
+                      'Delivery Guys',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  ...deliveryGuys.map<Widget>(
+                      (userData) => BuildUserTile(userData: userData)),
+                ],
+              ),
+            if (clients.isNotEmpty)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: Text(
+                      'Clients',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  ...clients.map<Widget>(
+                      (userData) => BuildUserTile(userData: userData)),
+                ],
+              ),
+          ],
         );
       },
     );
   }
 }
 
-class BuilduserStreamList extends StatelessWidget {
-  const BuilduserStreamList({super.key, required this.userData});
+class BuildUserTile extends StatelessWidget {
+  const BuildUserTile({super.key, required this.userData});
+
   final Map<String, dynamic> userData;
+
   @override
   Widget build(BuildContext context) {
     if (userData['email'] != _authServices.getCurrentuser()!.email) {

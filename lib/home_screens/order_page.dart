@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
-import 'package:tastybite/home_screens/menu_screen.dart';
 
 import 'package:tastybite/home_screens/order_screens/delivery_details_card.dart';
 
@@ -15,7 +14,6 @@ class OrderStatus {
   final String timestatus;
   final int currentStep;
   final String orderdescription;
-  
 
   OrderStatus(this.timestatus, this.currentStep, this.orderdescription);
 }
@@ -31,7 +29,8 @@ class OrderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Obter o tempo restante e o passo atual da barra de progresso
-    final orderStatus = calculateOrderStatus(orderData['orderTime'], orderData['time']);
+    final orderStatus =
+        calculateOrderStatus(orderData['orderTime'], orderData['time']);
 
     return Scaffold(
       appBar: AppBar(
@@ -39,7 +38,7 @@ class OrderPage extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: Colors.blue,
           ),
@@ -79,13 +78,14 @@ class OrderPage extends StatelessWidget {
                 const SizedBox(height: 3),
                 Text(
                   orderStatus.timestatus,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 30),
-                Lottie.asset('assets/lottie/delivery_girl_cycling.json', height: 160),
+                Lottie.asset('assets/lottie/delivery_girl_cycling.json',
+                    height: 160),
                 const SizedBox(height: 30),
                 Padding(
                   padding: const EdgeInsets.only(left: 40, right: 40),
@@ -104,7 +104,7 @@ class OrderPage extends StatelessWidget {
                 Text(
                   orderStatus.orderdescription,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w500,
                   ),
@@ -124,7 +124,8 @@ class OrderPage extends StatelessWidget {
   OrderStatus calculateOrderStatus(String orderTime, int estimatedTime) {
     DateTime now = DateTime.now();
     List<String> orderTimeParts = orderTime.split(':');
-    DateTime orderDateTime = DateTime(now.year, now.month, now.day, int.parse(orderTimeParts[0]), int.parse(orderTimeParts[1]));
+    DateTime orderDateTime = DateTime(now.year, now.month, now.day,
+        int.parse(orderTimeParts[0]), int.parse(orderTimeParts[1]));
     int elapsedMinutes = now.difference(orderDateTime).inMinutes;
     int remainingTime = estimatedTime - elapsedMinutes;
     String timestatus = 'min';
@@ -141,19 +142,23 @@ class OrderPage extends StatelessWidget {
       timestatus = '1-5 min';
       currentStep = 3; // Último passo
     } else if (remainingTime <= 10) {
-      orderdescription = 'O entregador pegou seu pedido\n e está a caminho de você';
+      orderdescription =
+          'O entregador pegou seu pedido\n e está a caminho de você';
       timestatus = '6-10 min';
       currentStep = 2; // Penúltimo passo
-    }else if(remainingTime <= 15){
-      orderdescription = 'O entregador pegou seu pedido\n e está a caminho de você';
+    } else if (remainingTime <= 15) {
+      orderdescription =
+          'O entregador pegou seu pedido\n e está a caminho de você';
       timestatus = '11-15 min';
       currentStep = 2; // Segundo passo
-    }else if(remainingTime <= 19){
-      orderdescription = 'Nós conseguimos um entregador para você!\n Eles estão indo para o restaurante';
+    } else if (remainingTime <= 19) {
+      orderdescription =
+          'Nós conseguimos um entregador para você!\n Eles estão indo para o restaurante';
       timestatus = '16-19 min';
       currentStep = 1; // Primeiro passo
     } else {
-      orderdescription = 'Nós conseguimos um entregador para você!\n Eles estão indo para o restaurante'; 
+      orderdescription =
+          'Nós conseguimos um entregador para você!\n Eles estão indo para o restaurante';
       timestatus = remainingTime.toString() + ' min';
       currentStep = 1; // Primeiro passo
     }
@@ -161,5 +166,3 @@ class OrderPage extends StatelessWidget {
     return OrderStatus(timestatus, currentStep, orderdescription);
   }
 }
-
-

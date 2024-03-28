@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tastybite/util/wallet.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tastybite/locator/service_locator.dart';
+import 'package:tastybite/util/wallet.dart';
 
 final FirebaseAuth _auth = locator.get();
 final FirebaseFirestore _firestore = locator.get();
@@ -15,6 +15,7 @@ class WalletScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController money = TextEditingController();
     Wallet wallet = Provider.of<Wallet>(context);
+    wallet.getBalanceFromFirebase();
     return Scaffold(
       appBar: AppBar(
         title: const Text('A Minha Carteira'),
@@ -41,37 +42,61 @@ class WalletScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Saldo na Carteira:',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 39,
+                    const Text(
+                      'Saldo na Carteira:',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 39,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    StreamBuilder<DocumentSnapshot>(
+                      stream: _firestore
+                          .collection('Users')
+                          .doc(_auth.currentUser!.uid)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        }
+
+                        if (snapshot.hasError) {
+                          return Text(
+                            'Error: ${snapshot.error}',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                               color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              wallet.balance.toStringAsFixed(2),
-                              style: const TextStyle(
-                                fontSize: 40,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
                             ),
-                            const SizedBox(width: 10),
-                            const Icon(
-                              Icons.euro_symbol,
-                              size: 40,
+                          );
+                        }
+
+                        final data =
+                            snapshot.data!.data() as Map<String, dynamic>?;
+
+                        if (data == null) {
+                          // Document doesn't exist, handle accordingly
+                          return const Text(
+                            'Balance not available',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
-                          ],
-                        ),
-                      ],
+                          );
+                        }
+
+                        final balance = data["balance"] ?? 0.0;
+                        return Text(
+                          balance.toStringAsFixed(2) + '€',
+                          style: const TextStyle(
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
