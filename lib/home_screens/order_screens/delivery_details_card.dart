@@ -4,9 +4,9 @@ class DeliveryDetailsCard extends StatelessWidget {
   final Map<String, dynamic> orderData;
 
   const DeliveryDetailsCard({
-    Key? key,
+    super.key,
     required this.orderData,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +16,11 @@ class DeliveryDetailsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          const Row(
             children: [
-              const Icon(Icons.location_on_outlined, color: Colors.blue, size: 28),
-              const SizedBox(width: 16),
-              const Text(
+              Icon(Icons.location_on_outlined, color: Colors.blue, size: 28),
+              SizedBox(width: 16),
+              Text(
                 'Delivery details',
                 style: TextStyle(
                   fontSize: 20,

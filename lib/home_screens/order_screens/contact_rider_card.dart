@@ -9,9 +9,9 @@ final FirebaseAuth _auth = locator.get();
 class ContactRiderCard extends StatelessWidget {
   final String deliverymanName;
   const ContactRiderCard({
-    Key? key,
+    super.key,
     required this.deliverymanName,
-  }) : super(key: key);
+  });
 
   
 

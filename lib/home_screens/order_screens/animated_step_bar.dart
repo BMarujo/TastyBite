@@ -23,15 +23,14 @@ class AnimatedStepBar extends StatelessWidget {
     this.padding = 3.0,
     this.fallbackLength = 100.0,
     this.duration = const Duration(milliseconds: 1500),
-    Key? key,
+    super.key,
   })  : assert(
             totalSteps > 0, "Number of total steps (totalSteps) of the StepProgressIndicator must be greater than 0"),
         assert(currentStep >= 0,
             "Current step (currentStep) of the StepProgressIndicator must be greater than or equal to 0"),
         assert(padding >= 0.0, "Padding (padding) of the StepProgressIndicator must be greater or equal to 0"),
         assert(stepWidths == null || stepWidths.length == totalSteps,
-            "Step widths (stepWidths) list should have the same length of total steps"),
-        super(key: key);
+            "Step widths (stepWidths) list should have the same length of total steps");
 
   @override
   Widget build(BuildContext context) {
@@ -143,13 +142,12 @@ class _ProgressBar extends StatelessWidget {
   final Radius? roundedEdges;
 
   const _ProgressBar({
-    Key? key,
     required this.width,
     required this.height,
     required this.padding,
     required this.color,
     this.roundedEdges,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +181,6 @@ class _AnimatedBar extends StatefulWidget {
   final Duration? duration;
 
   const _AnimatedBar({
-    Key? key,
     required this.width,
     required this.height,
     required this.padding,
@@ -191,7 +188,7 @@ class _AnimatedBar extends StatefulWidget {
     required this.unselectedColor,
     this.roundedEdges,
     this.duration,
-  }) : super(key: key);
+  });
 
   @override
   State<_AnimatedBar> createState() => _AnimatedBarState();

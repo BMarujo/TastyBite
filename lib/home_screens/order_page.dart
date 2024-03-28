@@ -20,9 +20,9 @@ class OrderStatus {
 
 class OrderPage extends StatefulWidget {
   const OrderPage({
-    Key? key,
+    super.key,
     required this.orderData,
-  }) : super(key: key);
+  });
 
   final Map<String, dynamic> orderData;
 
@@ -191,7 +191,7 @@ class _OrderPageState extends State<OrderPage> {
     } else {
       orderdescription =
           'Nós conseguimos um entregador para você!\n Eles estão indo para o restaurante';
-      timestatus = remainingTime.toString() + ' min';
+      timestatus = '$remainingTime min';
       currentStep = 1; // Primeiro passo
     }
 

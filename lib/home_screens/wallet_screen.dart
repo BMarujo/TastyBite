@@ -15,7 +15,6 @@ class WalletScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController money = TextEditingController();
     Wallet wallet = Provider.of<Wallet>(context);
-    wallet.getBalanceFromFirebase();
     return Scaffold(
       appBar: AppBar(
         title: const Text('A Minha Carteira'),

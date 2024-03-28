@@ -38,7 +38,7 @@ final Map<String, dynamic> orderData = {
 class MenuScreen extends StatefulWidget {
   final MyUser user;
 
-  MenuScreen({Key? key, required this.user}) : super(key: key);
+  const MenuScreen({super.key, required this.user});
 
   @override
   _MenuScreenState createState() => _MenuScreenState();

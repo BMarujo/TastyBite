@@ -10,7 +10,7 @@ import 'dart:async';
 final FirebaseAuth _auth = locator.get();
 
 class OrdersStatusScreen extends StatefulWidget {
-  const OrdersStatusScreen({Key? key});
+  const OrdersStatusScreen({super.key});
 
   @override
   _OrdersStatusScreenState createState() => _OrdersStatusScreenState();
@@ -51,7 +51,7 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
   Widget build(BuildContext context) {
     CollectionReference<Map<String, dynamic>> userOrdersCollection =
         FirebaseFirestore.instance.collection('orders');
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Orders'),
@@ -62,14 +62,15 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
         future: getAtualUserName(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(
                 child: Text('Erro ao carregar os pedidos: ${snapshot.error}'));
           } else {
             String? currentUserName = snapshot.data;
             if (currentUserName == null) {
-              return Center(child: Text('Nome do usuário não encontrado.'));
+              return const Center(
+                  child: Text('Nome do usuário não encontrado.'));
             }
             return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: userOrdersCollection
@@ -77,15 +78,16 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(
-                      child: Text('Erro ao carregar os pedidos: ${snapshot.error}'));
+                      child: Text(
+                          'Erro ao carregar os pedidos: ${snapshot.error}'));
                 } else {
                   List<QueryDocumentSnapshot<Map<String, dynamic>>>
                       orderDocuments = snapshot.data!.docs;
                   if (orderDocuments.isEmpty) {
-                    return Center(child: Text('Não há pedidos.'));
+                    return const Center(child: Text('Não há pedidos.'));
                   } else {
                     return ListView.builder(
                       itemCount: orderDocuments.length,
@@ -97,7 +99,8 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => OrderPage(orderData: orderData),
+                                builder: (context) =>
+                                    OrderPage(orderData: orderData),
                               ),
                             );
                           },
@@ -111,29 +114,42 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
                                 children: [
                                   Row(
                                     children: [
-                                      const Icon(Icons.delivery_dining_rounded, size: 60),
+                                      const Icon(Icons.delivery_dining_rounded,
+                                          size: 60),
                                       const SizedBox(width: 8),
-
                                       Expanded(
-                                        child : Column(
+                                        child: Column(
                                           mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              calculateOrderStatus(orderData['orderTime'], orderData['time'])['orderdescription'],
-                                              style: Theme.of(context).textTheme.bodyLarge!.apply(color: Colors.blue, fontWeightDelta: 1), 
+                                              calculateOrderStatus(
+                                                      orderData['orderTime'],
+                                                      orderData['time'])[
+                                                  'orderdescription'],
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyLarge!
+                                                  .apply(
+                                                      color: Colors.blue,
+                                                      fontWeightDelta: 1),
                                             ),
                                             Text(
-                                              calculateOrderStatus(orderData['orderTime'], orderData['time'])['timestatus'],
-                                              style: Theme.of(context).textTheme.headlineSmall),
+                                                calculateOrderStatus(
+                                                        orderData['orderTime'],
+                                                        orderData['time'])[
+                                                    'timestatus'],
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headlineSmall),
                                           ],
                                         ),
                                       ),
-                                      Icon(Icons.arrow_right, size: 16),
+                                      const Icon(Icons.arrow_right, size: 16),
                                     ],
                                   ),
                                   const SizedBox(height: 16),
-
                                   Row(
                                     children: [
                                       Expanded(
@@ -141,45 +157,59 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
                                           children: [
                                             const Icon(Icons.local_offer),
                                             const SizedBox(width: 8),
-                                        
                                             Expanded(
-                                              child : Column(
+                                              child: Column(
                                                 mainAxisSize: MainAxisSize.min,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     'Order', // Replace 'Your Text Here' with the desired text
-                                                    style: Theme.of(context).textTheme.labelMedium, 
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .labelMedium,
                                                   ),
-                                                  Text('${orderData['name']}', style: Theme.of(context).textTheme.titleMedium),
-                                        
+                                                  Text('${orderData['name']}',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .titleMedium),
                                                 ],
                                               ),
                                             ),
                                           ],
                                         ),
                                       ),
-
                                       Expanded(
                                         child: Row(
                                           children: [
                                             const Icon(Icons.calendar_month),
                                             const SizedBox(width: 8),
-                                        
                                             Expanded(
-                                              child : Column(
+                                              child: Column(
                                                 mainAxisSize: MainAxisSize.min,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    'Estimated Delivery', 
-                                                    style: Theme.of(context).textTheme.labelMedium, 
+                                                    'Estimated Delivery',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .labelMedium,
                                                   ),
                                                   Text(
-                                                    // access key remainingTime
-                                                    DateFormat.Hm().format(DateTime.now().add(Duration(minutes: calculateOrderStatus(orderData['orderTime'], orderData['time'])['remainingTime']))),
-                                                    style: Theme.of(context).textTheme.titleMedium),
-                                        
+                                                      // access key remainingTime
+                                                      DateFormat.Hm().format(DateTime
+                                                              .now()
+                                                          .add(Duration(
+                                                              minutes: calculateOrderStatus(
+                                                                      orderData[
+                                                                          'orderTime'],
+                                                                      orderData[
+                                                                          'time'])[
+                                                                  'remainingTime']))),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .titleMedium),
                                                 ],
                                               ),
                                             ),
@@ -192,8 +222,6 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
                               ),
                             ),
 
-                            
-                            
                             /*
                             title: Text('Status: ${orderData['status']}'),
                             subtitle: Column(
@@ -221,7 +249,6 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
   }
 }
 
-
 Future<String?> getAtualUserName() async {
   final User? user = _auth.currentUser;
 
@@ -231,7 +258,10 @@ Future<String?> getAtualUserName() async {
   } else {
     try {
       // Busca os dados do usuário na coleção 'Users' utilizando o UID do usuário atual
-      final userData = await FirebaseFirestore.instance.collection('Users').doc(user.uid).get();
+      final userData = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(user.uid)
+          .get();
       // Retorna o nome do usuário
       return userData.data()?['name'];
     } catch (e) {
@@ -245,14 +275,14 @@ Future<String?> getAtualUserName() async {
 Map<String, dynamic> calculateOrderStatus(String orderTime, int estimatedTime) {
   DateTime now = DateTime.now();
   List<String> orderTimeParts = orderTime.split(':');
-  DateTime orderDateTime = DateTime(now.year, now.month, now.day, int.parse(orderTimeParts[0]), int.parse(orderTimeParts[1]));
+  DateTime orderDateTime = DateTime(now.year, now.month, now.day,
+      int.parse(orderTimeParts[0]), int.parse(orderTimeParts[1]));
   int elapsedMinutes = now.difference(orderDateTime).inMinutes;
   int remainingTime = estimatedTime - elapsedMinutes;
 
   String timestatus;
   String orderdescription;
 
-  
   remainingTime = estimatedTime - elapsedMinutes;
 
   if (remainingTime <= 0) {
@@ -272,7 +302,7 @@ Map<String, dynamic> calculateOrderStatus(String orderTime, int estimatedTime) {
     timestatus = '16-19 min';
     orderdescription = 'Processing';
   } else {
-    timestatus = remainingTime.toString() + ' min';
+    timestatus = '$remainingTime min';
     orderdescription = 'Processing';
   }
 
