@@ -5,11 +5,47 @@ import 'package:tastybite/locator/service_locator.dart';
 import 'package:tastybite/home_screens/order_page.dart';
 import 'package:tastybite/home_screens/rounded_container.dart';
 import 'package:intl/intl.dart';
+import 'dart:async';
 
 final FirebaseAuth _auth = locator.get();
 
-class OrdersStatusScreen extends StatelessWidget {
+class OrdersStatusScreen extends StatefulWidget {
   const OrdersStatusScreen({Key? key});
+
+  @override
+  _OrdersStatusScreenState createState() => _OrdersStatusScreenState();
+}
+
+class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
+  late Timer _timer;
+  late String? _currentUserName;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+    _getCurrentUserName();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      // Atualizar a lista de pedidos a cada minuto
+      setState(() {});
+    });
+  }
+
+  Future<void> _getCurrentUserName() async {
+    final String? currentUserName = await getAtualUserName();
+    setState(() {
+      _currentUserName = currentUserName;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

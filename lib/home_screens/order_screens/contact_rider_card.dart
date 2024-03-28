@@ -1,12 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tastybite/home_screens/messenger_screen/chatpage.dart';
+import 'package:tastybite/locator/service_locator.dart';
+
+final FirebaseAuth _auth = locator.get();
 
 class ContactRiderCard extends StatelessWidget {
   final String deliverymanName;
-
   const ContactRiderCard({
     Key? key,
     required this.deliverymanName,
   }) : super(key: key);
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +25,18 @@ class ContactRiderCard extends StatelessWidget {
       ),
       leading: Image.asset('assets/imgs/avatar.png'),
       title: Text('Contact $deliverymanName'),
-      //subtitle: const Text('Add delivery instructions'),
-      /*
-      trailing: const Icon(
-        Icons.message_outlined,
-        size: 30,
-        color: Colors.blue,
+      
+      trailing: GestureDetector(
+        onTap: () {
+          fetchDeliverymanInfoAndNavigateToChat(context);
+        },
+        child: const Icon(
+          Icons.message_outlined,
+          size: 30,
+          color: Colors.blue,
+        ),
       ),
-      */
+      
       titleTextStyle: const TextStyle(
         fontSize: 18,
         color: Colors.black,
@@ -36,5 +47,39 @@ class ContactRiderCard extends StatelessWidget {
         fontWeight: FontWeight.w300,
       ),
     );
+  }
+
+  // Função para buscar as informações do entregador e navegar para a tela de chat
+  void fetchDeliverymanInfoAndNavigateToChat(BuildContext context) async {
+    try {
+      // Busca os dados do entregador
+      Map<String, dynamic> deliverymanData = await getDeliverymanData(deliverymanName);
+      // Navega para a tela de chat com os dados do entregador
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChatScreen(
+            receiverEmail: deliverymanData["email"],
+            receiverId: deliverymanData["uid"],
+          ),
+        ),
+      );
+    } catch (e) {
+      print('Erro ao buscar informações do entregador: $e');
+      // Trate o erro conforme necessário
+    }
+  }
+
+  // Função para buscar os dados do entregador
+  Future<Map<String, dynamic>> getDeliverymanData(String deliverymanName) async {
+    final QuerySnapshot<Map<String, dynamic>> deliverymanDataSnapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .where('name', isEqualTo: deliverymanName)
+        .get();
+    if (deliverymanDataSnapshot.docs.isNotEmpty) {
+      return deliverymanDataSnapshot.docs.first.data();
+    } else {
+      throw Exception('Nenhum entregador encontrado com o nome $deliverymanName');
+    }
   }
 }

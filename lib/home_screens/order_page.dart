@@ -8,8 +8,8 @@ import 'package:lottie/lottie.dart';
 
 import 'package:tastybite/home_screens/order_screens/animated_step_bar.dart';
 import 'package:tastybite/home_screens/order_screens/contact_rider_card.dart';
+import 'dart:async';
 
-// Classe para armazenar o tempo restante e o passo atual da barra de progresso
 class OrderStatus {
   final String timestatus;
   final int currentStep;
@@ -18,7 +18,7 @@ class OrderStatus {
   OrderStatus(this.timestatus, this.currentStep, this.orderdescription);
 }
 
-class OrderPage extends StatelessWidget {
+class OrderPage extends StatefulWidget {
   const OrderPage({
     Key? key,
     required this.orderData,
@@ -27,10 +27,42 @@ class OrderPage extends StatelessWidget {
   final Map<String, dynamic> orderData;
 
   @override
+  _OrderPageState createState() => _OrderPageState();
+}
+
+class _OrderPageState extends State<OrderPage> {
+  late Timer _timer;
+  late OrderStatus _orderStatus;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+    _calculateOrderStatus();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      _calculateOrderStatus();
+      setState(() {});
+    });
+  }
+
+  void _calculateOrderStatus() {
+    setState(() {
+      _orderStatus = calculateOrderStatus(
+          widget.orderData['orderTime'], widget.orderData['time']);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Obter o tempo restante e o passo atual da barra de progresso
-    final orderStatus =
-        calculateOrderStatus(orderData['orderTime'], orderData['time']);
 
     return Scaffold(
       appBar: AppBar(
@@ -77,7 +109,7 @@ class OrderPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  orderStatus.timestatus,
+                  _orderStatus.timestatus,
                   style: const TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
@@ -91,7 +123,7 @@ class OrderPage extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 40, right: 40),
                   child: AnimatedStepBar(
                     totalSteps: 4,
-                    currentStep: orderStatus.currentStep,
+                    currentStep: _orderStatus.currentStep,
                     height: 4,
                     padding: 3,
                     stepWidths: const [1, 3, 2, 2],
@@ -102,7 +134,7 @@ class OrderPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  orderStatus.orderdescription,
+                  _orderStatus.orderdescription,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 17,
@@ -110,11 +142,11 @@ class OrderPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 50),
-                ContactRiderCard(deliverymanName: orderData['deliveryman']),
+                ContactRiderCard(deliverymanName: widget.orderData['deliveryman']),
               ],
             ),
           ),
-          DeliveryDetailsCard(orderData: orderData),
+          DeliveryDetailsCard(orderData: widget.orderData),
         ],
       ),
     );
