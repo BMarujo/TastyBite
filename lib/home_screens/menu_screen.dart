@@ -250,20 +250,21 @@ class _MenuScreenState extends State<MenuScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
+                Navigator.pop(context);
                 // Confirm purchase and deduct the amount from the wallet
                 if (wallet.points >= 6) {
                   await wallet.removePoints();
-                  widget.user.addHistory(menuItem.name);
                   DateTime now = DateTime.now();
                   String formattedDate =
                       DateFormat('EEE d MMM y\nkk:mm:ss', 'pt_PT').format(now);
+                  widget.user.addHistory(
+                      '${menuItem.name}\nData da compra:\n$formattedDate');
                   widget.user.addDate(formattedDate);
                   // Optionally, you can perform other actions here
                   // such as sending the order to the server
                   // or updating the cart state.
                   await _getCurrentPosition();
-                  Navigator.pop(context); // Close the dialog
-                  _showSuccessDialog2(context, menuItem.name);
+                  _showSuccessDialog2(menuItem.name);
                 } else {
                   if (menuItem.price > wallet.balance) {
                     Navigator.pop(context); // Close the dialog
@@ -271,18 +272,19 @@ class _MenuScreenState extends State<MenuScreen> {
                   } else {
                     await wallet.withdraw(menuItem.price);
                     await wallet.addPoint(1);
-                    widget.user.addHistory(menuItem.name);
                     DateTime now = DateTime.now();
+
                     String formattedDate =
                         DateFormat('EEE d MMM y\nkk:mm:ss', 'pt_PT')
                             .format(now);
+                    widget.user.addHistory(
+                        '${menuItem.name}\nData da compra:\n$formattedDate');
                     widget.user.addDate(formattedDate);
                     // Optionally, you can perform other actions here
                     // such as sending the order to the server
                     // or updating the cart state.
                     await _getCurrentPosition();
-                    Navigator.pop(context); // Close the dialog
-                    _showSuccessDialog(context, menuItem.name);
+                    _showSuccessDialog(menuItem.name);
                   }
                 }
               },
@@ -294,7 +296,7 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  void _showSuccessDialog(BuildContext context, String itemName) {
+  void _showSuccessDialog(String itemName) {
     showDialog(
       context: context,
       barrierDismissible:
@@ -306,8 +308,7 @@ class _MenuScreenState extends State<MenuScreen> {
           actions: [
             ElevatedButton(
               onPressed: () async {
-                // POR ANTES DE SER CHAMADA A FUNÇÃO
-
+                Navigator.pop(context);
                 // Tenta obter o entregador disponível
                 DocumentSnapshot<Map<String, dynamic>>? deliveryGuySnapshot =
                     await getAvailableDeliveryGuy();
@@ -351,9 +352,6 @@ class _MenuScreenState extends State<MenuScreen> {
                   orderData['orderTime'] =
                       DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now());
                   orderData['deliveryAddress'] = _currentAddress;
-
-                  // Fecha o diálogo após o pedido ter sido feito
-                  Navigator.pop(context);
 
                   // Mostra a notificação ao usuário
                   await service.showNotificationWithPayload(
@@ -374,7 +372,7 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  void _showSuccessDialog2(BuildContext context, String itemName) {
+  void _showSuccessDialog2(String itemName) {
     showDialog(
       context: context,
       barrierDismissible:
@@ -387,6 +385,7 @@ class _MenuScreenState extends State<MenuScreen> {
             ElevatedButton(
               onPressed: () async {
                 // Tenta obter o entregador disponível
+                Navigator.pop(context);
                 DocumentSnapshot<Map<String, dynamic>>? deliveryGuySnapshot =
                     await getAvailableDeliveryGuy();
 
@@ -429,9 +428,6 @@ class _MenuScreenState extends State<MenuScreen> {
                   orderData['orderTime'] =
                       DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now());
                   orderData['deliveryAddress'] = _currentAddress;
-
-                  // Fecha o diálogo após o pedido ter sido feito
-                  Navigator.pop(context);
 
                   // Mostra a notificação ao usuário
                   await service.showNotificationWithPayload(

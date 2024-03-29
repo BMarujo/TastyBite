@@ -24,7 +24,8 @@ class HistoryPage extends StatelessWidget {
             return Center(
               child: Text(
                 'Error: ${snapshot.error}',
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             );
           } else {
@@ -77,12 +78,6 @@ class HistoryPage extends StatelessWidget {
                             ),
                           ),
                           child: ListTile(
-                            subtitle: Text(
-                              'Data da Compra: $dateItem',
-                              style: const TextStyle(
-                                  color: Color.fromARGB(255, 0, 0, 0),
-                                  fontSize: 17),
-                            ),
                             title: Text(
                               historyItem,
                               style: const TextStyle(
