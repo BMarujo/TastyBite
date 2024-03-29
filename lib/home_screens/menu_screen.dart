@@ -267,7 +267,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   _showSuccessDialog2(menuItem.name);
                 } else {
                   if (menuItem.price > wallet.balance) {
-                    _showUnsuccessDialog(context);
+                    _showUnsuccessDialog();
                   } else {
                     await wallet.withdraw(menuItem.price);
                     await wallet.addPoint(1);
@@ -448,7 +448,7 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  void _showUnsuccessDialog(BuildContext context) {
+  void _showUnsuccessDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
