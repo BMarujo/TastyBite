@@ -75,12 +75,11 @@ class _OrderPageState extends State<OrderPage> {
             color: Colors.blue,
           ),
           onPressed: () {
-            // Navegar de volta para a tela anterior quando o ícone for pressionado
             Navigator.of(context).pop();
           },
         ),
         title: const Text(
-          'Your Order',
+          'A Tua Encomenda',
           style: TextStyle(
             fontSize: 18,
             color: Colors.black,
@@ -101,7 +100,7 @@ class _OrderPageState extends State<OrderPage> {
               children: [
                 const SizedBox(height: 16),
                 const Text(
-                  'Estimated time of delivery',
+                  'Tempo Estimado de Entrega',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w300,
@@ -122,11 +121,11 @@ class _OrderPageState extends State<OrderPage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 40, right: 40),
                   child: AnimatedStepBar(
-                    totalSteps: 4,
+                    totalSteps: 6,
                     currentStep: _orderStatus.currentStep,
                     height: 4,
                     padding: 3,
-                    stepWidths: const [1, 3, 2, 2],
+                    stepWidths: const [1, 1, 2, 2, 1, 1],
                     selectedColor: Colors.blue,
                     unselectedColor: Colors.grey.shade300,
                     roundedEdges: const Radius.circular(10),
@@ -152,47 +151,54 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 
-  // Função para calcular o tempo restante e o passo atual da barra de progresso
   OrderStatus calculateOrderStatus(String orderTime, int estimatedTime) {
     DateTime now = DateTime.now();
-    List<String> orderTimeParts = orderTime.split(':');
-    DateTime orderDateTime = DateTime(now.year, now.month, now.day,
-        int.parse(orderTimeParts[0]), int.parse(orderTimeParts[1]));
+    List<String> orderTimeParts = orderTime.split(' ');
+    List<String> dateParts = orderTimeParts[0].split('/');
+    List<String> timeParts = orderTimeParts[1].split(':');
+    DateTime orderDateTime = DateTime(
+      int.parse(dateParts[2]), // year
+      int.parse(dateParts[1]), // month
+      int.parse(dateParts[0]), // day
+      int.parse(timeParts[0]), // hour
+      int.parse(timeParts[1]), // minute
+    );
     int elapsedMinutes = now.difference(orderDateTime).inMinutes;
     int remainingTime = estimatedTime - elapsedMinutes;
     String timestatus = 'min';
     String orderdescription = '';
 
     int currentStep;
+
     // Determinar o passo atual com base no tempo restante
     if (remainingTime <= 0) {
       orderdescription = 'Seu pedido foi entregue';
       timestatus = 'Pedido entregue';
-      currentStep = 4; // Pedido entregue
+      currentStep = 6; 
     } else if (remainingTime <= 5) {
       orderdescription = 'O entregador está quase lá!';
       timestatus = '1-5 min';
-      currentStep = 3; // Último passo
+      currentStep = 5; 
     } else if (remainingTime <= 10) {
       orderdescription =
-          'O entregador pegou seu pedido\n e está a caminho de você';
+          'O entregador já tem o seu pedido\n e está a caminho de você';
       timestatus = '6-10 min';
-      currentStep = 2; // Penúltimo passo
+      currentStep = 4; 
     } else if (remainingTime <= 15) {
       orderdescription =
-          'O entregador pegou seu pedido\n e está a caminho de você';
+          'O entregador já tem o seu pedido\n e está a caminho de você';
       timestatus = '11-15 min';
-      currentStep = 2; // Segundo passo
+      currentStep = 3; 
     } else if (remainingTime <= 19) {
       orderdescription =
-          'Nós conseguimos um entregador para você!\n Eles estão indo para o restaurante';
+          'Foi encontrado um entregador para você!\n Ele já está a caminho do restaurante';
       timestatus = '16-19 min';
-      currentStep = 1; // Primeiro passo
+      currentStep = 2; 
     } else {
       orderdescription =
-          'Nós conseguimos um entregador para você!\n Eles estão indo para o restaurante';
+          'Foi encontrado um entregador para você!\n Ele já está a caminho do restaurante';
       timestatus = '$remainingTime min';
-      currentStep = 1; // Primeiro passo
+      currentStep = 1; 
     }
 
     return OrderStatus(timestatus, currentStep, orderdescription);

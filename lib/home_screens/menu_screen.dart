@@ -32,7 +32,7 @@ final Map<String, dynamic> orderData = {
   'deliveryman': 'Jane Doe',
   'name': 'GRELHADO',
   'time': '20 min',
-  'orderTime': '12:00',
+  'orderTime': '2022/01/01 12:00',
 };
 
 class MenuScreen extends StatefulWidget {
@@ -322,7 +322,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   final User? user = _auth.currentUser;
 
                   if (user == null) {
-                    print('Usuário não autenticado.');
+                    print('Utilizador não autenticado.');
                     return;
                   }
 
@@ -339,7 +339,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     'name': itemName,
                     'time': 20,
                     'orderTime':
-                        '${DateTime.now().hour}:${DateTime.now().minute}',
+                        DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now()),
                     'deliveryAddress': _currentAddress,
                   });
 
@@ -349,7 +349,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   orderData['name'] = itemName;
                   orderData['time'] = 20;
                   orderData['orderTime'] =
-                      '${DateTime.now().hour}:${DateTime.now().minute}';
+                      DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now());
                   orderData['deliveryAddress'] = _currentAddress;
 
                   // Fecha o diálogo após o pedido ter sido feito
@@ -417,7 +417,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     'name': itemName,
                     'time': 20,
                     'orderTime':
-                        '${DateTime.now().hour}:${DateTime.now().minute}',
+                        DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now()),
                     'deliveryAddress': _currentAddress,
                   });
 
@@ -427,7 +427,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   orderData['name'] = itemName;
                   orderData['time'] = 20;
                   orderData['orderTime'] =
-                      '${DateTime.now().hour}:${DateTime.now().minute}';
+                      DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now());
                   orderData['deliveryAddress'] = _currentAddress;
 
                   // Fecha o diálogo após o pedido ter sido feito

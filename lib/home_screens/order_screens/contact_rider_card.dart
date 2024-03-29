@@ -24,7 +24,7 @@ class ContactRiderCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(3),
       ),
       leading: Image.asset('assets/imgs/avatar.png'),
-      title: Text('Contact $deliverymanName'),
+      title: Text('Contacte o $deliverymanName'),
       
       trailing: GestureDetector(
         onTap: () {

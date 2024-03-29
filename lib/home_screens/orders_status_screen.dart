@@ -35,7 +35,6 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
-      // Atualizar a lista de pedidos a cada minuto
       setState(() {});
     });
   }
@@ -54,9 +53,9 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Orders'),
+        title: const Text('Minhas Encomendas'),
         backgroundColor:
-            Colors.blue, // Set the app bar background color to blue
+            Colors.blue, 
       ),
       body: FutureBuilder<String?>(
         future: getAtualUserName(),
@@ -65,12 +64,12 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(
-                child: Text('Erro ao carregar os pedidos: ${snapshot.error}'));
+                child: Text('Erro ao carregar as encomendas: ${snapshot.error}'));
           } else {
             String? currentUserName = snapshot.data;
             if (currentUserName == null) {
               return const Center(
-                  child: Text('Nome do usuário não encontrado.'));
+                  child: Text('Nome de utilizador não encontrado.'));
             }
             return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: userOrdersCollection
@@ -82,13 +81,28 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
                 } else if (snapshot.hasError) {
                   return Center(
                       child: Text(
-                          'Erro ao carregar os pedidos: ${snapshot.error}'));
+                          'Erro ao carregar as encomendas: ${snapshot.error}'));
                 } else {
                   List<QueryDocumentSnapshot<Map<String, dynamic>>>
                       orderDocuments = snapshot.data!.docs;
+                      
                   if (orderDocuments.isEmpty) {
-                    return const Center(child: Text('Não há pedidos.'));
+                    return const Center(child: Text('Não há encomendas.'));
                   } else {
+                    orderDocuments.sort((a, b) {
+                      String orderDescriptionA = calculateOrderStatus(a['orderTime'], a['time'])['orderdescription'];
+                      String orderDescriptionB = calculateOrderStatus(b['orderTime'], b['time'])['orderdescription'];
+                      
+                      if (orderDescriptionA == 'Expirado' && orderDescriptionB != 'Expirado') {
+                        return 1;
+                      } else if (orderDescriptionA != 'Expirado' && orderDescriptionB == 'Expirado') {
+                        return -1;
+                      } else {
+                        int remainingTimeA = calculateOrderStatus(a['orderTime'], a['time'])['remainingTime'];
+                        int remainingTimeB = calculateOrderStatus(b['orderTime'], b['time'])['remainingTime'];
+                        return remainingTimeA.compareTo(remainingTimeB);
+                      }
+                    });
                     return ListView.builder(
                       itemCount: orderDocuments.length,
                       itemBuilder: (context, index) {
@@ -164,7 +178,7 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    'Order', // Replace 'Your Text Here' with the desired text
+                                                    'Encomenda', 
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .labelMedium,
@@ -191,13 +205,12 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    'Estimated Delivery',
+                                                    'Tempo Estimado de Chegada',
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .labelMedium,
                                                   ),
                                                   Text(
-                                                      // access key remainingTime
                                                       DateFormat.Hm().format(DateTime
                                                               .now()
                                                           .add(Duration(
@@ -221,19 +234,6 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
                                 ],
                               ),
                             ),
-
-                            /*
-                            title: Text('Status: ${orderData['status']}'),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Entregador: ${orderData['deliveryman']}'),
-                                Text('Nome: ${orderData['name']}'),
-                                Text('Tempo estimado: ${orderData['time']} min'),
-                                Text('Hora do pedido: ${orderData['orderTime']}'),
-                              ],
-                            ),
-                            */
                           ),
                         );
                       },
@@ -253,20 +253,16 @@ Future<String?> getAtualUserName() async {
   final User? user = _auth.currentUser;
 
   if (user == null) {
-    // Se o usuário não estiver autenticado, retorne null
     return null;
   } else {
     try {
-      // Busca os dados do usuário na coleção 'Users' utilizando o UID do usuário atual
       final userData = await FirebaseFirestore.instance
           .collection('Users')
           .doc(user.uid)
           .get();
-      // Retorna o nome do usuário
       return userData.data()?['name'];
     } catch (e) {
-      // Se ocorrer algum erro durante a busca dos dados do usuário, imprime o erro e retorna null
-      print('Erro ao buscar os dados do usuário: $e');
+      print('Erro ao buscar os dados do utilizador: $e');
       return null;
     }
   }
@@ -274,9 +270,16 @@ Future<String?> getAtualUserName() async {
 
 Map<String, dynamic> calculateOrderStatus(String orderTime, int estimatedTime) {
   DateTime now = DateTime.now();
-  List<String> orderTimeParts = orderTime.split(':');
-  DateTime orderDateTime = DateTime(now.year, now.month, now.day,
-      int.parse(orderTimeParts[0]), int.parse(orderTimeParts[1]));
+  List<String> orderTimeParts = orderTime.split(' ');
+  List<String> dateParts = orderTimeParts[0].split('/');
+  List<String> timeParts = orderTimeParts[1].split(':');
+  DateTime orderDateTime = DateTime(
+    int.parse(dateParts[2]), // year
+    int.parse(dateParts[1]), // month
+    int.parse(dateParts[0]), // day
+    int.parse(timeParts[0]), // hour
+    int.parse(timeParts[1]), // minute
+  );
   int elapsedMinutes = now.difference(orderDateTime).inMinutes;
   int remainingTime = estimatedTime - elapsedMinutes;
 
@@ -286,24 +289,23 @@ Map<String, dynamic> calculateOrderStatus(String orderTime, int estimatedTime) {
   remainingTime = estimatedTime - elapsedMinutes;
 
   if (remainingTime <= 0) {
-    // Se o tempo restante for negativo, a ordem está atrasada
-    timestatus = 'Expired';
-    orderdescription = 'Expired';
+    timestatus = 'Expirado';
+    orderdescription = 'Expirado';
   } else if (remainingTime <= 5) {
     timestatus = '1-5 min';
-    orderdescription = 'Almost ready';
+    orderdescription = 'Quase lá';
   } else if (remainingTime <= 10) {
     timestatus = '6-10 min';
-    orderdescription = 'On the way';
+    orderdescription = 'A caminho';
   } else if (remainingTime <= 15) {
     timestatus = '11-15 min';
-    orderdescription = 'On the way';
+    orderdescription = 'A caminho';
   } else if (remainingTime <= 19) {
     timestatus = '16-19 min';
-    orderdescription = 'Processing';
+    orderdescription = 'Processando';
   } else {
     timestatus = '$remainingTime min';
-    orderdescription = 'Processing';
+    orderdescription = 'Processando';
   }
 
   return {

@@ -21,7 +21,7 @@ class DeliveryDetailsCard extends StatelessWidget {
               Icon(Icons.location_on_outlined, color: Colors.blue, size: 28),
               SizedBox(width: 16),
               Text(
-                'Delivery details',
+                'Detalhes da encomenda',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
@@ -53,7 +53,7 @@ class DeliveryDetailsCard extends StatelessWidget {
                     child: Text('\u275E', style: TextStyle(color: Colors.grey.shade800)),
                   ),
                 ),
-                const TextSpan(text: '  Please call me on arrival'),
+                const TextSpan(text: '  Por favor contacte-me antes de entregar a encomenda. Obrigado!'),
               ],
             ),
           ),
@@ -66,7 +66,7 @@ class DeliveryDetailsCard extends StatelessWidget {
                 fontWeight: FontWeight.w400,
               ),
               children: [
-                const TextSpan(text: 'Delivered by'),
+                const TextSpan(text: 'Entregador:'),
                 TextSpan(
                   text: ' ${orderData['deliveryman']}',
                   style: TextStyle(
