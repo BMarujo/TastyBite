@@ -267,7 +267,6 @@ class _MenuScreenState extends State<MenuScreen> {
                   _showSuccessDialog2(menuItem.name);
                 } else {
                   if (menuItem.price > wallet.balance) {
-                    Navigator.pop(context); // Close the dialog
                     _showUnsuccessDialog(context);
                   } else {
                     await wallet.withdraw(menuItem.price);
