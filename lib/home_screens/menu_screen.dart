@@ -370,23 +370,11 @@ class _MenuScreenState extends State<MenuScreen> {
                     payload: itemName,
                   );
                 } else {
-                  showDialog(
-                    context: Navigator.of(context).overlay!.context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        content: const Text(
-                            'Nenhum entregador disponível no momento.'),
-                        title: const Text('Insucesso'),
-                        actions: [
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                          'Sem sucesso, nenhum entregador disponível no momento.'),
+                    ),
                   );
                   print('Nenhum entregador disponível no momento.');
                 }
@@ -497,23 +485,11 @@ class _MenuScreenState extends State<MenuScreen> {
                     payload: itemName,
                   );
                 } else {
-                  showDialog(
-                    context: Navigator.of(context).overlay!.context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        content: const Text(
-                            'Nenhum entregador disponível no momento.'),
-                        title: const Text('Insucesso'),
-                        actions: [
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                          'Sem sucesso, nenhum entregador disponível no momento.'),
+                    ),
                   );
                   // Se nenhum entregador estiver disponível, imprime uma mensagem ou executa outra lógica de tratamento
                   print('Nenhum entregador disponível no momento.');
