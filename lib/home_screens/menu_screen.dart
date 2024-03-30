@@ -390,6 +390,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         ],
                       );
                     },
+
                   );
                   print('Nenhum entregador disponível no momento.');
                 }
@@ -518,6 +519,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         ],
                       );
                     },
+
                   );
                   // Se nenhum entregador estiver disponível, imprime uma mensagem ou executa outra lógica de tratamento
                   print('Nenhum entregador disponível no momento.');
