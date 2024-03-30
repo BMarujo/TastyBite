@@ -371,7 +371,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   );
                 } else {
                   showDialog(
-                    context: context,
+                    context: Navigator.of(context).overlay!.context,
                     builder: (BuildContext context) {
                       return AlertDialog(
                         content: const Text(
@@ -498,7 +498,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   );
                 } else {
                   showDialog(
-                    context: context,
+                    context: Navigator.of(context).overlay!.context,
                     builder: (BuildContext context) {
                       return AlertDialog(
                         content: const Text(
