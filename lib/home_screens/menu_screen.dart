@@ -271,10 +271,12 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   void _showSuccessDialog(String itemName, Wallet wallet, MenuItem menuItem) {
+    // Store the context in a variable
+    BuildContext dialogContext = context;
+
     showDialog(
       context: context,
-      barrierDismissible:
-          false, // Não permite fechar o diálogo clicando fora dele
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('A processar!'),
@@ -283,14 +285,13 @@ class _MenuScreenState extends State<MenuScreen> {
             ElevatedButton(
               onPressed: () async {
                 Navigator.pop(context);
-                // Tenta obter o entregador disponível
                 DocumentSnapshot<Map<String, dynamic>>? deliveryGuySnapshot =
                     await getAvailableDeliveryGuy();
 
-                // Verifica se um entregador está disponível
                 if (deliveryGuySnapshot != null) {
+                  // Use the stored context variable here
                   showDialog(
-                    context: Navigator.of(context).overlay!.context,
+                    context: dialogContext,
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: const Text('Sucesso!'),
@@ -306,6 +307,7 @@ class _MenuScreenState extends State<MenuScreen> {
                       );
                     },
                   );
+                  // Rest of your code
                   await wallet.withdraw(menuItem.price);
                   await wallet.addPoint(1);
                   DateTime now = DateTime.now();
@@ -371,7 +373,8 @@ class _MenuScreenState extends State<MenuScreen> {
                   );
                 } else {
                   showDialog(
-                    context: context,
+                    context:
+                        dialogContext, // Use the stored context variable here
                     builder: (BuildContext context) {
                       return AlertDialog(
                         content: const Text(
@@ -400,6 +403,7 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   void _showSuccessDialog2(String itemName, Wallet wallet, MenuItem menuItem) {
+    BuildContext dialogContext = context;
     showDialog(
       context: context,
       barrierDismissible:
@@ -419,7 +423,7 @@ class _MenuScreenState extends State<MenuScreen> {
                 // Verifica se um entregador está disponível
                 if (deliveryGuySnapshot != null) {
                   showDialog(
-                    context: Navigator.of(context).overlay!.context,
+                    context: dialogContext,
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: const Text('Sucesso!'),
@@ -498,7 +502,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   );
                 } else {
                   showDialog(
-                    context: context,
+                    context: dialogContext,
                     builder: (BuildContext context) {
                       return AlertDialog(
                         content: const Text(
