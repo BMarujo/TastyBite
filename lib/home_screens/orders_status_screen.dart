@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tastybite/locator/service_locator.dart';
+import 'package:tastybite/services/locator_service.dart';
 import 'package:tastybite/home_screens/order_page.dart';
 import 'package:tastybite/home_screens/rounded_container.dart';
 import 'package:intl/intl.dart';
@@ -54,8 +54,7 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Minhas Encomendas'),
-        backgroundColor:
-            Colors.blue, 
+        backgroundColor: Colors.blue,
       ),
       body: FutureBuilder<String?>(
         future: getAtualUserName(),
@@ -64,7 +63,8 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(
-                child: Text('Erro ao carregar as encomendas: ${snapshot.error}'));
+                child:
+                    Text('Erro ao carregar as encomendas: ${snapshot.error}'));
           } else {
             String? currentUserName = snapshot.data;
             if (currentUserName == null) {
@@ -85,21 +85,27 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
                 } else {
                   List<QueryDocumentSnapshot<Map<String, dynamic>>>
                       orderDocuments = snapshot.data!.docs;
-                      
+
                   if (orderDocuments.isEmpty) {
                     return const Center(child: Text('Não há encomendas.'));
                   } else {
                     orderDocuments.sort((a, b) {
-                      String orderDescriptionA = calculateOrderStatus(a['orderTime'], a['time'])['orderdescription'];
-                      String orderDescriptionB = calculateOrderStatus(b['orderTime'], b['time'])['orderdescription'];
-                      
-                      if (orderDescriptionA == 'Expirado' && orderDescriptionB != 'Expirado') {
+                      String orderDescriptionA = calculateOrderStatus(
+                          a['orderTime'], a['time'])['orderdescription'];
+                      String orderDescriptionB = calculateOrderStatus(
+                          b['orderTime'], b['time'])['orderdescription'];
+
+                      if (orderDescriptionA == 'Expirado' &&
+                          orderDescriptionB != 'Expirado') {
                         return 1;
-                      } else if (orderDescriptionA != 'Expirado' && orderDescriptionB == 'Expirado') {
+                      } else if (orderDescriptionA != 'Expirado' &&
+                          orderDescriptionB == 'Expirado') {
                         return -1;
                       } else {
-                        int remainingTimeA = calculateOrderStatus(a['orderTime'], a['time'])['remainingTime'];
-                        int remainingTimeB = calculateOrderStatus(b['orderTime'], b['time'])['remainingTime'];
+                        int remainingTimeA = calculateOrderStatus(
+                            a['orderTime'], a['time'])['remainingTime'];
+                        int remainingTimeB = calculateOrderStatus(
+                            b['orderTime'], b['time'])['remainingTime'];
                         return remainingTimeA.compareTo(remainingTimeB);
                       }
                     });
@@ -178,7 +184,7 @@ class _OrdersStatusScreenState extends State<OrdersStatusScreen> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    'Encomenda', 
+                                                    'Encomenda',
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .labelMedium,

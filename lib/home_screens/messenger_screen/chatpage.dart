@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:tastybite/locator/service_locator.dart';
+import 'package:tastybite/services/locator_service.dart';
 import 'package:tastybite/services/auth_service.dart';
 import 'package:tastybite/services/chat_services.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_two.dart';

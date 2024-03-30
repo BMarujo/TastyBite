@@ -7,7 +7,7 @@ import 'package:tastybite/services/local_notification_service.dart';
 import 'package:tastybite/home_screens/order_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tastybite/locator/service_locator.dart';
+import 'package:tastybite/services/locator_service.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -253,37 +253,12 @@ class _MenuScreenState extends State<MenuScreen> {
                 Navigator.pop(context);
                 // Confirm purchase and deduct the amount from the wallet
                 if (wallet.points >= 6) {
-                  await wallet.removePoints();
-                  DateTime now = DateTime.now();
-                  String formattedDate =
-                      DateFormat('EEE d MMM y\nkk:mm:ss', 'pt_PT').format(now);
-                  widget.user.addHistory(
-                      '${menuItem.name}\nData da compra:\n$formattedDate');
-                  widget.user.addDate(formattedDate);
-                  // Optionally, you can perform other actions here
-                  // such as sending the order to the server
-                  // or updating the cart state.
-                  await _getCurrentPosition();
-                  _showSuccessDialog2(menuItem.name);
+                  _showSuccessDialog2(menuItem.name, wallet, menuItem);
                 } else {
                   if (menuItem.price > wallet.balance) {
                     _showUnsuccessDialog();
                   } else {
-                    await wallet.withdraw(menuItem.price);
-                    await wallet.addPoint(1);
-                    DateTime now = DateTime.now();
-
-                    String formattedDate =
-                        DateFormat('EEE d MMM y\nkk:mm:ss', 'pt_PT')
-                            .format(now);
-                    widget.user.addHistory(
-                        '${menuItem.name}\nData da compra:\n$formattedDate');
-                    widget.user.addDate(formattedDate);
-                    // Optionally, you can perform other actions here
-                    // such as sending the order to the server
-                    // or updating the cart state.
-                    await _getCurrentPosition();
-                    _showSuccessDialog(menuItem.name);
+                    _showSuccessDialog(menuItem.name, wallet, menuItem);
                   }
                 }
               },
@@ -295,14 +270,14 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  void _showSuccessDialog(String itemName) {
+  void _showSuccessDialog(String itemName, Wallet wallet, MenuItem menuItem) {
     showDialog(
       context: context,
       barrierDismissible:
           false, // Não permite fechar o diálogo clicando fora dele
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text(' Sucesso!'),
+          title: const Text('A processar!'),
           content: const Text('Obrigado pela sua compra!'),
           actions: [
             ElevatedButton(
@@ -314,6 +289,36 @@ class _MenuScreenState extends State<MenuScreen> {
 
                 // Verifica se um entregador está disponível
                 if (deliveryGuySnapshot != null) {
+                  showDialog(
+                    context: Navigator.of(context).overlay!.context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Sucesso!'),
+                        content: const Text('Você ganhou 1 ponto!'),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  await wallet.withdraw(menuItem.price);
+                  await wallet.addPoint(1);
+                  DateTime now = DateTime.now();
+
+                  String formattedDate =
+                      DateFormat('EEE d MMM y\nkk:mm:ss', 'pt_PT').format(now);
+                  widget.user.addHistory(
+                      '${menuItem.name}\nData da compra:\n$formattedDate');
+                  widget.user.addDate(formattedDate);
+                  // Optionally, you can perform other actions here
+                  // such as sending the order to the server
+                  // or updating the cart state.
+                  await _getCurrentPosition();
                   // Se um entregador estiver disponível, obtemos os detalhes do entregador
                   Map<String, dynamic> deliveryGuyData =
                       deliveryGuySnapshot.data()!;
@@ -352,7 +357,12 @@ class _MenuScreenState extends State<MenuScreen> {
                       DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now());
                   orderData['deliveryAddress'] = _currentAddress;
 
-                  // Mostra a notificação ao usuário
+                  await FirebaseFirestore.instance
+                      .collection('Users')
+                      .doc(deliveryGuyData['uid'])
+                      .set({'available': false}, SetOptions(merge: true));
+
+                  // Mostra a notificação ao utilizador
                   await service.showNotificationWithPayload(
                     id: 0,
                     title: 'Tasty Bite',
@@ -360,6 +370,24 @@ class _MenuScreenState extends State<MenuScreen> {
                     payload: itemName,
                   );
                 } else {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: const Text(
+                            'Nenhum entregador disponível no momento.'),
+                        title: const Text('Insucesso'),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                   print('Nenhum entregador disponível no momento.');
                 }
               },
@@ -371,15 +399,15 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  void _showSuccessDialog2(String itemName) {
+  void _showSuccessDialog2(String itemName, Wallet wallet, MenuItem menuItem) {
     showDialog(
       context: context,
       barrierDismissible:
           false, // Não permite fechar o diálogo clicando fora dele
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Sucesso!'),
-          content: const Text('Você usou os seus pontos!'),
+          title: const Text('A processar!'),
+          content: const Text('Obrigado pela sua compra!'),
           actions: [
             ElevatedButton(
               onPressed: () async {
@@ -390,7 +418,35 @@ class _MenuScreenState extends State<MenuScreen> {
 
                 // Verifica se um entregador está disponível
                 if (deliveryGuySnapshot != null) {
+                  showDialog(
+                    context: Navigator.of(context).overlay!.context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Sucesso!'),
+                        content: const Text('Você usou os pontos!'),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                   // Se um entregador estiver disponível, obtemos os detalhes do entregador
+                  await wallet.removePoints();
+                  DateTime now = DateTime.now();
+                  String formattedDate =
+                      DateFormat('EEE d MMM y\nkk:mm:ss', 'pt_PT').format(now);
+                  widget.user.addHistory(
+                      '${menuItem.name}\nData da compra:\n$formattedDate');
+                  widget.user.addDate(formattedDate);
+                  // Optionally, you can perform other actions here
+                  // such as sending the order to the server
+                  // or updating the cart state.
+                  await _getCurrentPosition();
                   Map<String, dynamic> deliveryGuyData =
                       deliveryGuySnapshot.data()!;
                   String deliverymanName = deliveryGuyData['name'];
@@ -428,7 +484,12 @@ class _MenuScreenState extends State<MenuScreen> {
                       DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now());
                   orderData['deliveryAddress'] = _currentAddress;
 
-                  // Mostra a notificação ao usuário
+                  await FirebaseFirestore.instance
+                      .collection('Users')
+                      .doc(deliveryGuyData['uid'])
+                      .set({'available': false}, SetOptions(merge: true));
+
+                  // Mostra a notificação ao utilizador
                   await service.showNotificationWithPayload(
                     id: 0,
                     title: 'Tasty Bite',
@@ -436,6 +497,24 @@ class _MenuScreenState extends State<MenuScreen> {
                     payload: itemName,
                   );
                 } else {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: const Text(
+                            'Nenhum entregador disponível no momento.'),
+                        title: const Text('Insucesso'),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                   // Se nenhum entregador estiver disponível, imprime uma mensagem ou executa outra lógica de tratamento
                   print('Nenhum entregador disponível no momento.');
                 }
@@ -497,13 +576,13 @@ class _MenuScreenState extends State<MenuScreen> {
 
       // Obtém os documentos que satisfazem a consulta
       QuerySnapshot<Map<String, dynamic>> snapshot = await query.get();
-
+      Map<String, dynamic> deliveryGuyData = snapshot.docs.first.data();
       // Verifica se há documentos retornados
-      if (snapshot.docs.isNotEmpty) {
+      if (deliveryGuyData['available'] == true && snapshot.docs.isNotEmpty) {
         // Retorna o primeiro documento encontrado
         return snapshot.docs.first;
       } else {
-        // Retorna null se nenhum usuário disponível for encontrado
+        // Retorna null se nenhum entregador disponível for encontrado
         return null;
       }
     } catch (e) {

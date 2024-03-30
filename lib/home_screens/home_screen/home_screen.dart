@@ -3,10 +3,15 @@ import 'package:tastybite/util/myuser.dart';
 import 'package:tastybite/home_screens/home_screen/history.dart';
 import 'package:tastybite/util/wallet.dart';
 import 'package:provider/provider.dart';
-import 'package:tastybite/locator/service_locator.dart';
+import 'package:tastybite/services/locator_service.dart';
 import 'package:tastybite/services/auth_service.dart';
 import 'package:tastybite/util/logout.dart';
 import 'package:tastybite/util/image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+final FirebaseAuth _auth = locator.get();
+final FirebaseFirestore _firestore = locator.get();
 
 class HomeScreen extends StatefulWidget {
   final MyUser user;
@@ -33,10 +38,167 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<String> get_user_type() async {
+    String x = "";
+    try {
+      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(_auth.currentUser!.uid)
+          .get();
+
+      final data = snapshot.data() as Map<String, dynamic>?;
+      if (data == null || !data.containsKey('type')) {
+        throw Exception('Type data not available');
+      }
+      x = data['type'];
+      return x;
+    } catch (e) {
+      // Handle errors, e.g., logging or notifying the user
+      print('Error retrieving type: $e');
+      return x;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Wallet wallet = Provider.of<Wallet>(context);
     LogoutHelper logoutHelper = Provider.of<LogoutHelper>(context);
+
+    return FutureBuilder<String>(
+      future: get_user_type(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // While the future is being resolved, show a loading indicator
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          // If an error occurs, handle it accordingly
+          return Text('Error: ${snapshot.error}');
+        } else {
+          // If the future has completed successfully
+          String userType = snapshot.data!;
+          if (userType == "deliveryguy") {
+            // Render UI for delivery guy
+            return _buildDeliveryGuyUI(wallet, logoutHelper);
+          } else {
+            // Render UI for other users
+            return _buildRegularUserUI(wallet, logoutHelper);
+          }
+        }
+      },
+    );
+  }
+
+  Widget _buildDeliveryGuyUI(Wallet wallet, LogoutHelper logoutHelper) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Olá, ${widget.user.getname}!',
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 40,
+            fontFamily: 'Roboto',
+          ),
+          strutStyle: const StrutStyle(
+            height: 3.5,
+          ),
+        ),
+        backgroundColor: Colors.blue,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blue.shade200, Colors.blue.shade400],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ImagePickerWidget(
+              onValueChanged: onImageChanged,
+              edit: "",
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () async {
+                await _firestore
+                    .collection('Users')
+                    .doc(_auth.currentUser!.uid)
+                    .set({'available': true}, SetOptions(merge: true));
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Estás disponível para entregas!'),
+                  ),
+                );
+              },
+              child: const Text('Estou disponível para entregas!'),
+            ),
+            ListTile(
+              trailing: Icon(
+                Icons.person_off_outlined,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              title: const Text("Logout"),
+              leading: Icon(
+                Icons.logout,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              onTap: () async {
+                await AuthServices(_firestore, _auth)
+                    .signOut(context, logoutHelper);
+              },
+            ),
+            const SizedBox(height: 40),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(width: 10),
+                Text(
+                  '6 Pontos = Menu Grátis!',
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Icon(
+                  Icons.money_off,
+                  size: 50,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Os teus Pontos: ${wallet.points}',
+              style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Route route = MaterialPageRoute(
+                    builder: (context) => HistoryPage(user: widget.user));
+                Navigator.push(context, route);
+              },
+              style: ElevatedButton.styleFrom(
+                elevation: 30,
+                shadowColor: const Color.fromARGB(255, 0, 0, 0),
+              ),
+              child: const Text('Ver Histórico de Compras'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRegularUserUI(Wallet wallet, LogoutHelper logoutHelper) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -80,7 +242,7 @@ class HomeScreenState extends State<HomeScreen> {
                 color: Theme.of(context).colorScheme.primary,
               ),
               onTap: () async {
-                await AuthServices(locator.get(), locator.get())
+                await AuthServices(_firestore, _auth)
                     .signOut(context, logoutHelper);
               },
             ),

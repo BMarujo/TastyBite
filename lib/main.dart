@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tastybite/firebase_options.dart';
 import 'package:tastybite/splash.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:tastybite/locator/service_locator.dart';
+import 'package:tastybite/services/locator_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

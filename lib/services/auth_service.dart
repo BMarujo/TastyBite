@@ -42,6 +42,7 @@ class AuthServices {
           "email": email,
           "name": nickname,
           "type": type,
+          "available": true,
         },
       );
 

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tastybite/home_screens/messenger_screen/chatpage.dart';
-import 'package:tastybite/locator/service_locator.dart';
+import 'package:tastybite/services/locator_service.dart';
 
 final FirebaseAuth _auth = locator.get();
 
@@ -12,8 +12,6 @@ class ContactRiderCard extends StatelessWidget {
     super.key,
     required this.deliverymanName,
   });
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +23,6 @@ class ContactRiderCard extends StatelessWidget {
       ),
       leading: Image.asset('assets/imgs/avatar.png'),
       title: Text('Contacte o $deliverymanName'),
-      
       trailing: GestureDetector(
         onTap: () {
           fetchDeliverymanInfoAndNavigateToChat(context);
@@ -36,7 +33,6 @@ class ContactRiderCard extends StatelessWidget {
           color: Colors.blue,
         ),
       ),
-      
       titleTextStyle: const TextStyle(
         fontSize: 18,
         color: Colors.black,
@@ -53,7 +49,8 @@ class ContactRiderCard extends StatelessWidget {
   void fetchDeliverymanInfoAndNavigateToChat(BuildContext context) async {
     try {
       // Busca os dados do entregador
-      Map<String, dynamic> deliverymanData = await getDeliverymanData(deliverymanName);
+      Map<String, dynamic> deliverymanData =
+          await getDeliverymanData(deliverymanName);
       // Navega para a tela de chat com os dados do entregador
       Navigator.push(
         context,
@@ -71,15 +68,18 @@ class ContactRiderCard extends StatelessWidget {
   }
 
   // Função para buscar os dados do entregador
-  Future<Map<String, dynamic>> getDeliverymanData(String deliverymanName) async {
-    final QuerySnapshot<Map<String, dynamic>> deliverymanDataSnapshot = await FirebaseFirestore.instance
-        .collection('Users')
-        .where('name', isEqualTo: deliverymanName)
-        .get();
+  Future<Map<String, dynamic>> getDeliverymanData(
+      String deliverymanName) async {
+    final QuerySnapshot<Map<String, dynamic>> deliverymanDataSnapshot =
+        await FirebaseFirestore.instance
+            .collection('Users')
+            .where('name', isEqualTo: deliverymanName)
+            .get();
     if (deliverymanDataSnapshot.docs.isNotEmpty) {
       return deliverymanDataSnapshot.docs.first.data();
     } else {
-      throw Exception('Nenhum entregador encontrado com o nome $deliverymanName');
+      throw Exception(
+          'Nenhum entregador encontrado com o nome $deliverymanName');
     }
   }
 }
