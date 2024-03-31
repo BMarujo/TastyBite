@@ -253,11 +253,13 @@ class _MenuScreenState extends State<MenuScreen> {
                 Navigator.pop(context);
                 // Confirm purchase and deduct the amount from the wallet
                 if (wallet.points >= 6) {
+                  await _getCurrentPosition();
                   _showSuccessDialog2(menuItem.name, wallet, menuItem);
                 } else {
                   if (menuItem.price > wallet.balance) {
                     _showUnsuccessDialog();
                   } else {
+                    await _getCurrentPosition();
                     _showSuccessDialog(menuItem.name, wallet, menuItem);
                   }
                 }
@@ -273,7 +275,6 @@ class _MenuScreenState extends State<MenuScreen> {
   void _showSuccessDialog(String itemName, Wallet wallet, MenuItem menuItem) {
     // Store the context in a variable
     BuildContext dialogContext = context;
-
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -320,7 +321,6 @@ class _MenuScreenState extends State<MenuScreen> {
                   // Optionally, you can perform other actions here
                   // such as sending the order to the server
                   // or updating the cart state.
-                  await _getCurrentPosition();
                   // Se um entregador estiver disponível, obtemos os detalhes do entregador
                   Map<String, dynamic> deliveryGuyData =
                       deliveryGuySnapshot.data()!;
@@ -390,7 +390,6 @@ class _MenuScreenState extends State<MenuScreen> {
                         ],
                       );
                     },
-
                   );
                   print('Nenhum entregador disponível no momento.');
                 }
@@ -451,7 +450,6 @@ class _MenuScreenState extends State<MenuScreen> {
                   // Optionally, you can perform other actions here
                   // such as sending the order to the server
                   // or updating the cart state.
-                  await _getCurrentPosition();
                   Map<String, dynamic> deliveryGuyData =
                       deliveryGuySnapshot.data()!;
                   String deliverymanName = deliveryGuyData['name'];
@@ -519,7 +517,6 @@ class _MenuScreenState extends State<MenuScreen> {
                         ],
                       );
                     },
-
                   );
                   // Se nenhum entregador estiver disponível, imprime uma mensagem ou executa outra lógica de tratamento
                   print('Nenhum entregador disponível no momento.');
