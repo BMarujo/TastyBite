@@ -69,7 +69,7 @@ class HomeScreenState extends State<HomeScreen> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // While the future is being resolved, show a loading indicator
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           // If an error occurs, handle it accordingly
           return Text('Error: ${snapshot.error}');
