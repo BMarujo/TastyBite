@@ -104,95 +104,97 @@ class HomeScreenState extends State<HomeScreen> {
         ),
         backgroundColor: Colors.blue,
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue.shade200, Colors.blue.shade400],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue.shade200, Colors.blue.shade400],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ImagePickerWidget(
-              onValueChanged: onImageChanged,
-              edit: "",
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () async {
-                await _firestore
-                    .collection('Users')
-                    .doc(_auth.currentUser!.uid)
-                    .set({'available': true}, SetOptions(merge: true));
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ImagePickerWidget(
+                onValueChanged: onImageChanged,
+                edit: "",
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () async {
+                  await _firestore
+                      .collection('Users')
+                      .doc(_auth.currentUser!.uid)
+                      .set({'available': true}, SetOptions(merge: true));
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Estás disponível para entregas!'),
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Estás disponível para entregas!'),
+                    ),
+                  );
+                },
+                child: const Text('Estou disponível para entregas!'),
+              ),
+              ListTile(
+                trailing: Icon(
+                  Icons.person_off_outlined,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                title: const Text("Logout"),
+                leading: Icon(
+                  Icons.logout,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                onTap: () async {
+                  await AuthServices(_firestore, _auth)
+                      .signOut(context, logoutHelper);
+                },
+              ),
+              const SizedBox(height: 40),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(width: 10),
+                  Text(
+                    '6 Pontos = Menu Grátis!',
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
-                );
-              },
-              child: const Text('Estou disponível para entregas!'),
-            ),
-            ListTile(
-              trailing: Icon(
-                Icons.person_off_outlined,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              title: const Text("Logout"),
-              leading: Icon(
-                Icons.logout,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              onTap: () async {
-                await AuthServices(_firestore, _auth)
-                    .signOut(context, logoutHelper);
-              },
-            ),
-            const SizedBox(height: 40),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(width: 10),
-                Text(
-                  '6 Pontos = Menu Grátis!',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
+                  Icon(
+                    Icons.money_off,
+                    size: 50,
                     color: Colors.white,
                   ),
-                ),
-                Icon(
-                  Icons.money_off,
-                  size: 50,
-                  color: Colors.white,
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Os teus Pontos: ${wallet.points}',
-              style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Route route = MaterialPageRoute(
-                    builder: (context) => HistoryPage(user: widget.user));
-                Navigator.push(context, route);
-              },
-              style: ElevatedButton.styleFrom(
-                elevation: 30,
-                shadowColor: const Color.fromARGB(255, 0, 0, 0),
+                ],
               ),
-              child: const Text('Ver Histórico de Compras'),
-            ),
-          ],
+              const SizedBox(height: 20),
+              Text(
+                'Os teus Pontos: ${wallet.points}',
+                style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Route route = MaterialPageRoute(
+                      builder: (context) => HistoryPage(user: widget.user));
+                  Navigator.push(context, route);
+                },
+                style: ElevatedButton.styleFrom(
+                  elevation: 30,
+                  shadowColor: const Color.fromARGB(255, 0, 0, 0),
+                ),
+                child: const Text('Ver Histórico de Compras'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -214,80 +216,82 @@ class HomeScreenState extends State<HomeScreen> {
         ),
         backgroundColor: Colors.blue,
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue.shade200, Colors.blue.shade400],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue.shade200, Colors.blue.shade400],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ImagePickerWidget(
-              onValueChanged: onImageChanged,
-              edit: "",
-            ),
-            const SizedBox(height: 40),
-            ListTile(
-              trailing: Icon(
-                Icons.person_off_outlined,
-                color: Theme.of(context).colorScheme.primary,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ImagePickerWidget(
+                onValueChanged: onImageChanged,
+                edit: "",
               ),
-              title: const Text("Logout"),
-              leading: Icon(
-                Icons.logout,
-                color: Theme.of(context).colorScheme.primary,
+              const SizedBox(height: 40),
+              ListTile(
+                trailing: Icon(
+                  Icons.person_off_outlined,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                title: const Text("Logout"),
+                leading: Icon(
+                  Icons.logout,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                onTap: () async {
+                  await AuthServices(_firestore, _auth)
+                      .signOut(context, logoutHelper);
+                },
               ),
-              onTap: () async {
-                await AuthServices(_firestore, _auth)
-                    .signOut(context, logoutHelper);
-              },
-            ),
-            const SizedBox(height: 40),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(width: 10),
-                Text(
-                  '6 Pontos = Menu Grátis!',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
+              const SizedBox(height: 40),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(width: 10),
+                  Text(
+                    '6 Pontos = Menu Grátis!',
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Icon(
+                    Icons.money_off,
+                    size: 50,
                     color: Colors.white,
                   ),
-                ),
-                Icon(
-                  Icons.money_off,
-                  size: 50,
-                  color: Colors.white,
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Os teus Pontos: ${wallet.points}',
-              style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Route route = MaterialPageRoute(
-                    builder: (context) => HistoryPage(user: widget.user));
-                Navigator.push(context, route);
-              },
-              style: ElevatedButton.styleFrom(
-                elevation: 30,
-                shadowColor: const Color.fromARGB(255, 0, 0, 0),
+                ],
               ),
-              child: const Text('Ver Histórico de Compras'),
-            ),
-          ],
+              const SizedBox(height: 20),
+              Text(
+                'Os teus Pontos: ${wallet.points}',
+                style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Route route = MaterialPageRoute(
+                      builder: (context) => HistoryPage(user: widget.user));
+                  Navigator.push(context, route);
+                },
+                style: ElevatedButton.styleFrom(
+                  elevation: 30,
+                  shadowColor: const Color.fromARGB(255, 0, 0, 0),
+                ),
+                child: const Text('Ver Histórico de Compras'),
+              ),
+            ],
+          ),
         ),
       ),
     );
