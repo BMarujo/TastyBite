@@ -134,12 +134,12 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
               ),
               Image.network(
                 _imageUrl,
-                width: 200,
-                height: 180,
+                width: 230,
+                height: 210,
                 fit: BoxFit.cover,
               ),
               const SizedBox(
-                height: 5,
+                height: 20,
               ),
               customButton(
                 title: 'Escolher da galeria',
@@ -167,14 +167,14 @@ Widget customButton(
     required IconData icon,
     required VoidCallback onClick}) {
   return SizedBox(
-    width: 200,
+    width: 220,
     child: ElevatedButton(
       onPressed: onClick,
       child: Row(
         children: [
           Icon(icon),
           const SizedBox(width: 5),
-          Text(title, style: const TextStyle(fontSize: 13)),
+          Text(title, style: const TextStyle(fontSize: 14)),
         ],
       ),
     ),

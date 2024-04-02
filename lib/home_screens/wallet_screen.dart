@@ -46,7 +46,7 @@ class WalletScreen extends StatelessWidget {
                         'Saldo na Carteira:',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontSize: 39,
+                            fontSize: 49,
                             color: Colors.white,
                             fontWeight: FontWeight.bold),
                       ),
@@ -91,7 +91,7 @@ class WalletScreen extends StatelessWidget {
                           return Text(
                             balance.toStringAsFixed(2) + '€',
                             style: const TextStyle(
-                              fontSize: 40,
+                              fontSize: 50,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -107,14 +107,14 @@ class WalletScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(15.0),
                 child: TextFormField(
                   strutStyle: const StrutStyle(
-                    fontSize: 20,
+                    fontSize: 30,
                     height: 2,
                   ),
                   controller: money,
                   style: const TextStyle(color: Colors.white, fontSize: 25),
                   decoration: const InputDecoration(
                     labelStyle: TextStyle(
-                      fontSize: 20,
+                      fontSize: 30,
                       color: Color.fromARGB(255, 0, 0, 0),
                     ),
                     labelText: 'Quantia a depositar',
@@ -149,7 +149,7 @@ class WalletScreen extends StatelessWidget {
                   elevation: 20,
                   backgroundColor: const Color.fromARGB(255, 213, 238, 250),
                   foregroundColor: Colors.black,
-                  fixedSize: const Size(150, 70),
+                  fixedSize: const Size(180, 100),
                   padding: const EdgeInsets.all(20),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25),
@@ -157,7 +157,7 @@ class WalletScreen extends StatelessWidget {
                 ),
                 child: const Text('Depositar',
                     style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
               ),
               const SizedBox(height: 60),
             ],

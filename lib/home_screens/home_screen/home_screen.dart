@@ -95,7 +95,7 @@ class HomeScreenState extends State<HomeScreen> {
           'Olá, ${widget.user.getname}!',
           style: const TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 40,
+            fontSize: 30,
             fontFamily: 'Roboto',
           ),
           strutStyle: const StrutStyle(
@@ -117,12 +117,18 @@ class HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              const SizedBox(height: 30),
               ImagePickerWidget(
                 onValueChanged: onImageChanged,
                 edit: "",
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               ElevatedButton(
+                style: ButtonStyle(
+                  fixedSize: MaterialStateProperty.all(const Size(290, 60)),
+                  backgroundColor: MaterialStateProperty.all(
+                      const Color.fromARGB(255, 243, 224, 230)),
+                ),
                 onPressed: () async {
                   await _firestore
                       .collection('Users')
@@ -131,19 +137,26 @@ class HomeScreenState extends State<HomeScreen> {
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Estás disponível para entregas!'),
+                      content: Text(
+                          style: TextStyle(fontSize: 17),
+                          'Estás disponível para entregas!'),
                     ),
                   );
                 },
-                child: const Text('Estou disponível para entregas!'),
+                child: const Text(
+                    style: TextStyle(fontSize: 17),
+                    'Estou disponível para entregas!'),
               ),
+              const SizedBox(height: 20),
               ListTile(
                 trailing: Icon(
+                  size: 30,
                   Icons.person_off_outlined,
                   color: Theme.of(context).colorScheme.primary,
                 ),
-                title: const Text("Logout"),
+                title: const Text(style: TextStyle(fontSize: 25), "Logout"),
                 leading: Icon(
+                  size: 30,
                   Icons.logout,
                   color: Theme.of(context).colorScheme.primary,
                 ),
@@ -188,11 +201,14 @@ class HomeScreenState extends State<HomeScreen> {
                   Navigator.push(context, route);
                 },
                 style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(290, 60),
                   elevation: 30,
                   shadowColor: const Color.fromARGB(255, 0, 0, 0),
                 ),
-                child: const Text('Ver Histórico de Compras'),
+                child: const Text(
+                    style: TextStyle(fontSize: 18), 'Ver Histórico de Compras'),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -207,7 +223,7 @@ class HomeScreenState extends State<HomeScreen> {
           'Olá, ${widget.user.getname}!',
           style: const TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 40,
+            fontSize: 30,
             fontFamily: 'Roboto',
           ),
           strutStyle: const StrutStyle(
@@ -229,6 +245,7 @@ class HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              const SizedBox(height: 30),
               ImagePickerWidget(
                 onValueChanged: onImageChanged,
                 edit: "",
@@ -236,11 +253,13 @@ class HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 40),
               ListTile(
                 trailing: Icon(
+                  size: 30,
                   Icons.person_off_outlined,
                   color: Theme.of(context).colorScheme.primary,
                 ),
-                title: const Text("Logout"),
+                title: const Text(style: TextStyle(fontSize: 25), "Logout"),
                 leading: Icon(
+                  size: 30,
                   Icons.logout,
                   color: Theme.of(context).colorScheme.primary,
                 ),
@@ -269,15 +288,15 @@ class HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 40),
               Text(
                 'Os teus Pontos: ${wallet.points}',
                 style: const TextStyle(
-                    fontSize: 24,
+                    fontSize: 26,
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
                   Route route = MaterialPageRoute(
@@ -285,11 +304,14 @@ class HomeScreenState extends State<HomeScreen> {
                   Navigator.push(context, route);
                 },
                 style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(290, 60),
                   elevation: 30,
                   shadowColor: const Color.fromARGB(255, 0, 0, 0),
                 ),
-                child: const Text('Ver Histórico de Compras'),
+                child: const Text(
+                    style: TextStyle(fontSize: 18), 'Ver Histórico de Compras'),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
