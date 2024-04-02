@@ -135,6 +135,7 @@ class LoginPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 126, 178, 255),
+      resizeToAvoidBottomInset: false,
       body: Center(
         child: Column(
           children: [

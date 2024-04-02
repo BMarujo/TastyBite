@@ -174,7 +174,7 @@ Widget customButton(
         children: [
           Icon(icon),
           const SizedBox(width: 5),
-          Text(title),
+          Text(title, style: const TextStyle(fontSize: 13)),
         ],
       ),
     ),
