@@ -160,14 +160,14 @@ class HomeScreenState extends State<HomeScreen> {
                   Text(
                     '6 Pontos = Menu Grátis!',
                     style: TextStyle(
-                      fontSize: 30,
+                      fontSize: 25,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
                   Icon(
                     Icons.money_off,
-                    size: 50,
+                    size: 35,
                     color: Colors.white,
                   ),
                 ],
@@ -257,14 +257,14 @@ class HomeScreenState extends State<HomeScreen> {
                   Text(
                     '6 Pontos = Menu Grátis!',
                     style: TextStyle(
-                      fontSize: 30,
+                      fontSize: 25,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
                   Icon(
                     Icons.money_off,
-                    size: 50,
+                    size: 35,
                     color: Colors.white,
                   ),
                 ],
